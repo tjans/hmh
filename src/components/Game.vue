@@ -1,7 +1,8 @@
 <template>
     <div style="display:flex; align-items: stretch;">
        <div class="home-container">
-           <div v-for="player in homePlayers" :key="player.Id">
+           <div class="team-header" :style="{backgroundColor:homeStyles.bodyBG, color:homeStyles.bodyFG, border:'0px solid ' + homeStyles.border}">Milwaukee Bucks</div>
+           <div v-for="player in gameData.homePlayers" :key="player.Id" @click="selectPlayer(player.Id)" class="roster-player">
              {{ player.FirstName }}  {{ player.LastName }}
            </div>
        </div>
@@ -16,153 +17,81 @@
 
                <div style='color:white; font-weight:bold; font-size:16pt;'>FISERV FORUM</div>
 
-                <court-player team="home" position="PG" :player="homePG" :styles="homeStyles"  />
-                <court-player team="home" position="SF" :player="homeSF" :styles="homeStyles"  />
-                <court-player team="home" position="C" :player="homeC" :styles="homeStyles"  />
-                <court-player team="home" position="PF" :player="homePF" :styles="homeStyles"  />
-                <court-player team="home" position="SG" :player="homeSG" :styles="homeStyles"  />
+                <court-player @click="selectPosition('homePG')" team="home" position="PG" :player="gameData.homePG" :styles="homeStyles"  />
+                <court-player @click="selectPosition('homeSF')" team="home" position="SF" :player="gameData.homeSF" :styles="homeStyles"  />
+                <court-player @click="selectPosition('homeC')" team="home" position="C" :player="gameData.homeC" :styles="homeStyles"  />
+                <court-player @click="selectPosition('homePF')" team="home" position="PF" :player="gameData.homePF" :styles="homeStyles"  />
+                <court-player @click="selectPosition('homeSG')" team="home" position="SG" :player="gameData.homeSG" :styles="homeStyles"  />
 
                 <!-- Away Players -->
 
-                <court-player team="away" position="PG" :player="awayPG" :styles="awayStyles"  />
-                <court-player team="away" position="SF" :player="awaySF" :styles="awayStyles"  />
-                <court-player team="away" position="PF" :player="awayPF" :styles="awayStyles"  />
-                <court-player team="away" position="C" :player="awayC" :styles="awayStyles"  />
-                <court-player team="away" position="SG" :player="awaySG" :styles="awayStyles"  />
+                <court-player team="away" position="PG" :player="gameData.awayPG" :styles="awayStyles"  />
+                <court-player team="away" position="SF" :player="gameData.awaySF" :styles="awayStyles"  />
+                <court-player team="away" position="PF" :player="gameData.awayPF" :styles="awayStyles"  />
+                <court-player team="away" position="C" :player="gameData.awayC" :styles="awayStyles"  />
+                <court-player team="away" position="SG" :player="gameData.awaySG" :styles="awayStyles"  />
                 
            </div>
        </div>
 
        <div class="away-container">
-           <div v-for="player in awayPlayers" :key="player.Id">
+           <div class="team-header" :style="{backgroundColor:awayStyles.bodyBG, color:awayStyles.bodyFG, border:'0px solid ' + awayStyles.border}">Toronto Raptors</div>
+           <div v-for="player in gameData.awayPlayers" :key="player.Id" @click="selectPlayer(player.Id)" class="roster-player">
              {{ player.FirstName }}  {{ player.LastName }}
            </div>
        </div>
     </div>
 
-    <div style="height:200px; background:#6CC;">Bottom</div>
+    <div style="height:200px; background:#6CC;">
+        <button class='btn btn-dark m-1'>2PA</button>
+        <button class='btn btn-dark m-1'>2PM</button>
+        <button class='btn btn-dark m-1'>3PM</button>
+        <button class='btn btn-dark m-1'>FTA</button>
+        <button class='btn btn-dark m-1'>FTM</button>
+        <button class='btn btn-dark m-1'>ORB</button>
+        <button class='btn btn-dark m-1'>DRB</button>
+        <button class='btn btn-dark m-1'>BLK</button>
+        <button class='btn btn-dark m-1'>STL</button>
+        <button class='btn btn-dark m-1'>PF</button>
+        <button class='btn btn-dark m-1'>D6</button>
+        <button class='btn btn-dark m-1'>2D6</button>
+        <button class='btn btn-dark m-1'>Chips</button>
+        <button class='btn btn-dark m-1'>Lightning</button>
+
+    </div>
 </template>
 
 <script>
-import { ref, computed, reactive } from 'vue'
 import ScoreSection from './ScoreSection.vue';
 import CourtPlayer from './CourtPlayer.vue';
-
-const sqlite3 = require('sqlite3').verbose();
-const remote = require('electron').remote;
-const app = remote.app;
-const dataPath = app.getPath('userData') + '/hmh.db';
+import useGameData from '@/composables/useGameData'
 
 export default {
   name: 'Game',
-  props: {
-    msg: String
-  },
+  props: {},
   components: {
     ScoreSection,
     CourtPlayer
   },
   setup() {
-      const homePlayers = ref([]);
-      const awayPlayers = ref([]);
-
-      const homeStyles = {
-          headerFG: 'black',
-          headerBG: 'white',
-          bodyFG: 'white',
-          bodyBG: '#024813',
-          border: 'white'
+      const selectPosition = (position) => {
+          console.log(position)
+          alert('position selected ' + position);
       }
 
-      const awayStyles = {
-          headerFG: 'black',
-          headerBG: 'white',
-          bodyFG: 'white',
-          bodyBG: 'black',
-          border: 'red'
+      const selectPlayer = (id) => {
+          console.log(id)
+          alert('player selected ' + id);
       }
 
-      const gameData = ref({
-          homeTeamId: 1, // get these from the game data
-          awayTeamId: 2,
-          
-          homePGId: 2,
-          homeSGId: 3,
-          homeSFId: 5,
-          homePFId: 1,
-          homeCId: 4,
-
-          awayPGId: 7,
-          awaySFId: 8,
-          awayPFId: 9,
-          awaySGId: 10,
-          awayCId: 11
-
-      })
-      
-
-      let db = new sqlite3.Database(dataPath);
-      let sql = `SELECT FirstName, LastName, Id FROM players WHERE TeamId = ?`;
-      db.all(sql, [gameData.value.homeTeamId], (err, rows)=>{
-          homePlayers.value = rows
-      })
-
-      sql = `SELECT FirstName, LastName, Id FROM players WHERE TeamId = ?`;
-      db.all(sql, [gameData.value.awayTeamId], (err, rows)=>{
-          awayPlayers.value = rows
-      })
-
-      const homePG = computed(()=>{
-          return homePlayers.value.find(player=>player.Id == gameData.value.homePGId)
-      })
-      const homeSG = computed(()=>{
-          return homePlayers.value.find(player=>player.Id == gameData.value.homeSGId)
-      })
-      const homeSF = computed(()=>{
-          return homePlayers.value.find(player=>player.Id == gameData.value.homeSFId)
-      })
-      const homePF = computed(()=>{
-          return homePlayers.value.find(player=>player.Id == gameData.value.homePFId)
-      })
-      const homeC = computed(()=>{
-          return homePlayers.value.find(player=>player.Id == gameData.value.homeCId)
-      })
-
-      const awayPG = computed(()=>{
-          return awayPlayers.value.find(player=>player.Id == gameData.value.awayPGId)
-      })
-      const awaySF = computed(()=>{
-          return awayPlayers.value.find(player=>player.Id == gameData.value.awaySFId)
-      })
-      const awaySG = computed(()=>{
-          return awayPlayers.value.find(player=>player.Id == gameData.value.awaySGId)
-      })
-      const awayPF = computed(()=>{
-          return awayPlayers.value.find(player=>player.Id == gameData.value.awayPFId)
-      })
-      const awayC = computed(()=>{
-          return awayPlayers.value.find(player=>player.Id == gameData.value.awayCId)
-      })
+      const { homeStyles, awayStyles, gameData } = useGameData()
 
       return {
           gameData,
-          homePlayers,
-          awayPlayers,
-          
-          homePG,
-          homeSF,
-          homeC,
-          homePF,
-          homeSG,
-
-          awayPG,
-          awaySF,
-          awayC,
-          awayPF,
-          awaySG,
-
           homeStyles,
-          awayStyles
+          awayStyles,
+          selectPosition,
+          selectPlayer
       }
   }
 }
@@ -262,5 +191,17 @@ export default {
 .away-C {
     top:50px;
     right:245px;
+}
+
+.roster-player {
+    cursor:pointer;
+    padding:10px 0px 10px 0px;
+    border-bottom:1px solid black;
+}
+
+.team-header {
+    padding:10px 0px 10px 0px;
+    border-bottom:1px solid black;
+    font-weight:bold;
 }
 </style>
