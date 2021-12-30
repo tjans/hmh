@@ -67,8 +67,8 @@
 import ScoreSection from './ScoreSection.vue';
 import CourtPlayer from './CourtPlayer.vue';
 import useGameData from '@/composables/useGameData'
-//import usePersistentStore from '@/composables/usePersistentStore'
 import { useStore, mapState } from 'vuex'
+import { onMounted } from 'vue'
 
 export default {
   name: 'Game',
@@ -78,8 +78,11 @@ export default {
     CourtPlayer
   },
   setup() {
+      onMounted(() => {
+          console.log('mounted')
+      });
+
       const store = useStore()
-      //const persistentStore = usePersistentStore()
       //persistentStore.loadStateFromFile()
 
       const selectPosition = (position) => {

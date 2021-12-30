@@ -2,28 +2,29 @@
 import { useStore } from 'vuex'
 
 // Accept store and automatically use name of store as storename.json
-export function usePersistentStore() {
-  // const store = useStore()
+export default function usePersistentStore() {
   const remote = require('electron').remote;
   const app = remote.app;
-  const appPath = app.getPath('userData') + '/data.json'
+  const appPath = app.getPath('userData') + '/data/'
   var fs = require("fs");
 
-  // const loadStateFromFile = () => {
-  //   if(fs.existsSync(appPath))
-  //   {
-  //       // load state from file system
-  //       //let persistedState = JSON.parse(fs.readFileSync(appPath, 'utf8'))
-  //       //store.commit('overwriteState', persistedState)
-  //   }
-  // };
+  const save = (dataFile, data) => {
+    const fullPath = appPath + dataFile + '.json'
+    fs.writeFileSync(fullPath, JSON.stringify(data));
+  }
 
-  // const saveStateToFile = () => {
-  //   //fs.writeFileSync(appPath, JSON.stringify(store.state));
-  // }
+  const load = (dataFile) => {
+    const fullPath = appPath + dataFile + '.json'
+    if(fs.existsSync(fullPath))
+    {
+        return JSON.parse(fs.readFileSync(fullPath, 'utf8'))
+    }
+    
+    return null;
+  };
 
-  // return {
-  //   loadStateFromFile,
-  //   saveStateToFile,
-  // };
+  return {
+    save,
+    load
+  }
 }
