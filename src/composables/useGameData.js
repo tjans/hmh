@@ -1,14 +1,14 @@
 import { ref, computed } from 'vue'
-const sqlite3 = require('sqlite3').verbose();
-const remote = require('electron').remote;
-const app = remote.app;
-const dataPath = app.getPath('userData') + '/hmh.db';
+import usePersistentStore from '@/composables/usePersistentStore'
+import { useStore } from 'vuex'
 
 // eventually this will take in a gameId
 export default function useGameData()
 {
-    // results = SELECT FROM games where Id = gameId
-    
+    const store = useStore()
+    const pStore = usePersistentStore()
+    let teams = pStore.load('teams')
+
     const homePlayers = ref([]);
     const awayPlayers = ref([]);
 
@@ -33,17 +33,19 @@ export default function useGameData()
 
     })
 
-      let db = new sqlite3.Database(dataPath);
-      let sql = `SELECT FirstName, LastName, Id FROM players WHERE TeamId = ?`;
-      db.all(sql, [gameData.value.homeTeamId], (err, rows)=>{
-          homePlayers.value = rows
-      })
+      homePlayers.value = []
+      awayPlayers.value = []
 
-      sql = `SELECT FirstName, LastName, Id FROM players WHERE TeamId = ?`;
-      db.all(sql, [gameData.value.awayTeamId], (err, rows)=>{
-          awayPlayers.value = rows
-      })
+      // Teams
+      const homeTeam = computed(() => {
+        return teams.find(team=>team.id == store.state.game.homeId)
+      });
 
+      const awayTeam = computed(() => {
+        return teams.find(team=>team.id == store.state.game.awayId)
+      });
+
+      // Home Positions
       const homePG = computed(()=>{
           return gameData.value.homePlayers.find(player=>player.Id == gameData.value.homePGId)
       })
@@ -60,6 +62,7 @@ export default function useGameData()
           return gameData.value.homePlayers.find(player=>player.Id == gameData.value.homeCId)
       })
 
+      // Away Positions
       const awayPG = computed(()=>{
           return gameData.value.awayPlayers.find(player=>player.Id == gameData.value.awayPGId)
       })
@@ -95,6 +98,8 @@ export default function useGameData()
     return {
         homeStyles,
         awayStyles,
-        gameData
+        gameData,
+        homeTeam,
+        awayTeam
     }
 }

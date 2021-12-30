@@ -1,0 +1,18 @@
+Settings for college/pro:
+    seconds
+    periods
+    displaying clock/OT, max checks
+
+Game Type (NCAA/NBA)
+Putting players into position
+Scoring a play
+Switching possession
+Calculating home fouls
+FAC deck
+Game Summary
+Placing chips
+Game actions into an useActions composable
+Coaching strategy (complacent, energized, etc)
+
+Player stats
+    Change color for foul trouble, resting, etc

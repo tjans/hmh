@@ -2,7 +2,7 @@
     <div class="score-container">
             <div class="home-team team">
                 <div :style="{backgroundColor:homeStyles.bodyBG, color: homeStyles.bodyFG, border:'2px solid ' + homeStyles.border}">
-                    Team 1
+                    {{homeTeam.city}} {{homeTeam.mascot}}
                     <span v-if="possession==='home'" class="dot"></span>
                 </div>
                 <div class="team-score">{{homeScore}}</div>
@@ -11,13 +11,13 @@
 
             <div class="clock-area">
                 <div class='period'>{{period}}</div>
-                11:31
+                {{clock}}
             </div>
 
             <div class="away-team team">
                 <div :style="{backgroundColor:awayStyles.bodyBG, color: awayStyles.bodyFG, border:'2px solid ' + awayStyles.border}">
                     <span v-if="possession==='away'" class="dot"></span>
-                    Team 2
+                    {{awayTeam.city}} {{awayTeam.mascot}}
                 </div>
                 <div class="team-score">{{awayScore}}</div>
                 <div>Fouls: {{awayFouls}}</div>
@@ -26,14 +26,17 @@
 </template>
 
 <script>
-import { mapState, useStore } from 'vuex'
+import { useStore } from 'vuex'
 import { computed } from 'vue'
+import useGameData from '@/composables/useGameData'
 
 export default {
   name: 'ScoreSection',
   props: ['homeStyles', 'awayStyles'],
   setup(props) {      
-      const store = useStore()    
+      const store = useStore() 
+      const {homeTeam, awayTeam} = useGameData()
+      
       return {
           period: computed(() => store.state.game.period),
           homeScore: computed(() => store.state.game.homeScore),
@@ -41,6 +44,8 @@ export default {
           homeFouls: computed(() => store.state.game.homeFouls),
           awayFouls: computed(() => store.state.game.awayFouls),
           possession: computed(() => store.state.game.possession),
+          clock: computed(() => store.getters['game/clockDisplay']),
+          homeTeam, awayTeam
       }
   }
 }

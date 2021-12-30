@@ -1,11 +1,14 @@
 <template>
     <div style="display:flex; align-items: stretch;">
        <div class="home-container">
-           <div class="team-header" :style="{backgroundColor:homeStyles.bodyBG, color:homeStyles.bodyFG, border:'0px solid ' + homeStyles.border}">Milwaukee Bucks</div>
-           <div v-for="(player) in gameData.homePlayers" 
+           <div class="team-header" :style="{backgroundColor:homeStyles.bodyBG, color:homeStyles.bodyFG, border:'0px solid ' + homeStyles.border}">
+              {{homeTeam.city}} {{homeTeam.mascot}}
+           </div>
+
+           <div v-for="(player) in homeTeam.roster" 
             class="roster-player" 
-            :key="player.Id" @click="selectPlayer(player.Id)">
-             {{ player.FirstName }}  {{ player.LastName }}
+            :key="player.id" @click="selectPlayer(player.id)">
+             {{ player.firstName }}  {{ player.lastName }}
            </div>
        </div>
        
@@ -37,14 +40,23 @@
        </div>
 
        <div class="away-container">
-           <div class="team-header" :style="{backgroundColor:awayStyles.bodyBG, color:awayStyles.bodyFG, border:'0px solid ' + awayStyles.border}">Toronto Raptors</div>
-           <div v-for="player in gameData.awayPlayers" :key="player.Id" @click="selectPlayer(player.Id)" class="roster-player">
-             {{ player.FirstName }}  {{ player.LastName }}
+           <div class="team-header" :style="{backgroundColor:awayStyles.bodyBG, color:awayStyles.bodyFG, border:'0px solid ' + awayStyles.border}">
+               {{awayTeam.city}} {{awayTeam.mascot}}
+            </div>
+           
+           <div v-for="player in awayTeam.roster" :key="player.id" @click="selectPlayer(player.id)" class="roster-player">
+             {{ player.firstName }}  {{ player.lastName }}
            </div>
        </div>
     </div>
 
     <div style="height:200px; background:#6CC;">
+        <button class='btn btn-dark m-1' @click="flipFac">Flip</button>
+        <button class='btn btn-dark m-1' @click="newPeriod">New Period</button>
+
+
+        <!-- 
+        <button class='btn btn-dark m-1' @click="incrementFouls">PF</button>
         <button class='btn btn-dark m-1'>2PA</button>
         <button class='btn btn-dark m-1'>2PM</button>
         <button class='btn btn-dark m-1'>3PM</button>
@@ -54,11 +66,10 @@
         <button class='btn btn-dark m-1'>DRB</button>
         <button class='btn btn-dark m-1'>BLK</button>
         <button class='btn btn-dark m-1'>STL</button>
-        <button class='btn btn-dark m-1' @click="incrementFouls">PF</button>
         <button class='btn btn-dark m-1'>D6</button>
         <button class='btn btn-dark m-1'>2D6</button>
         <button class='btn btn-dark m-1'>Chips</button>
-        <button class='btn btn-dark m-1'>Lightning</button>
+        <button class='btn btn-dark m-1'>Lightning</button> -->
 
     </div>
 </template>
@@ -68,7 +79,6 @@ import ScoreSection from './ScoreSection.vue';
 import CourtPlayer from './CourtPlayer.vue';
 import useGameData from '@/composables/useGameData'
 import { useStore, mapState } from 'vuex'
-import { onMounted } from 'vue'
 
 export default {
   name: 'Game',
@@ -78,13 +88,9 @@ export default {
     CourtPlayer
   },
   setup() {
-      onMounted(() => {
-          console.log('mounted')
-      });
 
       const store = useStore()
-      //persistentStore.loadStateFromFile()
-
+      
       const selectPosition = (position) => {
           console.log(position)
           alert('position selected ' + position);
@@ -98,11 +104,18 @@ export default {
       const incrementFouls = () => {
           let gameState = {...store.state.game}
           gameState.homeFouls++
-          console.log(gameState);
           store.commit('game/update', gameState);
       }
 
-      const { homeStyles, awayStyles, gameData } = useGameData()
+      const flipFac = () => {
+          store.commit('game/tick', -12)
+      }
+
+      const newPeriod = () => {
+          store.commit('game/newPeriod')
+      }
+
+      const { homeStyles, awayStyles, gameData, homeTeam, awayTeam } = useGameData()
 
       return {
           gameData,
@@ -110,7 +123,10 @@ export default {
           awayStyles,
           selectPosition,
           selectPlayer,
-          incrementFouls
+          incrementFouls,
+          flipFac,
+          newPeriod,
+          homeTeam, awayTeam
       }
   }
 }
