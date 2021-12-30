@@ -2,7 +2,9 @@
     <div style="display:flex; align-items: stretch;">
        <div class="home-container">
            <div class="team-header" :style="{backgroundColor:homeStyles.bodyBG, color:homeStyles.bodyFG, border:'0px solid ' + homeStyles.border}">Milwaukee Bucks</div>
-           <div v-for="player in gameData.homePlayers" :key="player.Id" @click="selectPlayer(player.Id)" class="roster-player">
+           <div v-for="(player) in gameData.homePlayers" 
+            class="roster-player" 
+            :key="player.Id" @click="selectPlayer(player.Id)">
              {{ player.FirstName }}  {{ player.LastName }}
            </div>
        </div>
@@ -114,11 +116,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .home-container {
-    background:#CECECE;
+    background:black;
     flex-grow:1;
 }
 .away-container {
-    background:#CECECE;
+    background:black;
     flex-grow:1;
 }
 .middle-container {
@@ -209,13 +211,19 @@ export default {
 
 .roster-player {
     cursor:pointer;
-    padding:10px 0px 10px 0px;
+    padding:5px 0px 5px 0px;
     border-bottom:1px solid black;
+    background:white;
+    font-weight:bold;
+}
+.roster-player:hover {
+    background:#CECECE;
 }
 
 .team-header {
     padding:10px 0px 10px 0px;
     border-bottom:1px solid black;
     font-weight:bold;
+    font-size:16pt;
 }
 </style>

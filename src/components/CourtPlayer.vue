@@ -1,5 +1,5 @@
 <template>
-        <div class="player" :class="[team + '-' + position]" :style="{backgroundColor:styles.bodyBG, color:styles.bodyFG, border:'0px solid ' + styles.border}">
+        <div class="player" :class="[team + '-' + position]" :style="{backgroundColor:styles.bodyBG, color:styles.bodyFG, borderColor:styles.border}">
             <div v-if="player">
                 <div :style="{background:styles.headerBG, color:styles.headerFG, fontWeight:'bold'}">
                     {{position}} - {{ player.LastName }}
@@ -43,5 +43,9 @@ export default {
     padding:5px;
     width:200px;
     cursor:pointer;
+}
+.player:hover {
+    border-width:2px !important;
+    border-style:solid !important;
 }
 </style>
