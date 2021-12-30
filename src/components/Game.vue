@@ -52,7 +52,7 @@
         <button class='btn btn-dark m-1'>DRB</button>
         <button class='btn btn-dark m-1'>BLK</button>
         <button class='btn btn-dark m-1'>STL</button>
-        <button class='btn btn-dark m-1'>PF</button>
+        <button class='btn btn-dark m-1' @click="incrementFouls">PF</button>
         <button class='btn btn-dark m-1'>D6</button>
         <button class='btn btn-dark m-1'>2D6</button>
         <button class='btn btn-dark m-1'>Chips</button>
@@ -65,6 +65,8 @@
 import ScoreSection from './ScoreSection.vue';
 import CourtPlayer from './CourtPlayer.vue';
 import useGameData from '@/composables/useGameData'
+//import usePersistentStore from '@/composables/usePersistentStore'
+import { useStore, mapState } from 'vuex'
 
 export default {
   name: 'Game',
@@ -74,6 +76,10 @@ export default {
     CourtPlayer
   },
   setup() {
+      const store = useStore()
+      //const persistentStore = usePersistentStore()
+      //persistentStore.loadStateFromFile()
+
       const selectPosition = (position) => {
           console.log(position)
           alert('position selected ' + position);
@@ -84,6 +90,13 @@ export default {
           alert('player selected ' + id);
       }
 
+      const incrementFouls = () => {
+          let gameState = {...store.state.game}
+          gameState.homeFouls++
+          console.log(gameState);
+          store.commit('game/update', gameState);
+      }
+
       const { homeStyles, awayStyles, gameData } = useGameData()
 
       return {
@@ -91,7 +104,8 @@ export default {
           homeStyles,
           awayStyles,
           selectPosition,
-          selectPlayer
+          selectPlayer,
+          incrementFouls
       }
   }
 }
