@@ -9,17 +9,18 @@
     homeFouls: 2,
     awayFouls: 4,
     possession: 'h',
-
-    homePG: null
+    homePositions: {
+      PG: null
+    }
   }
 
 const game = {
   namespaced: true,
   state: () => (defaultState),
     mutations: {
-      setHomePG(state, newState)
+      setHomePGId(state, newState)
       {
-        state.homePG = newState
+        state.homePositions.PG = newState
       },
       update (state, newState) {
         Object.assign(state, newState)

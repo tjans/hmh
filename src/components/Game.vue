@@ -96,7 +96,8 @@ export default {
     }
 
     const debugSet = () => {
-        store.commit('game/setHomePG', 1);
+        let newValue = (store.state.game.homePositions.PG == 1) ? 2 : 1
+        store.commit('game/setHomePGId', newValue);
     }
 
     const debugShow = () => {
