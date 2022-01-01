@@ -21,6 +21,10 @@ export default function useGameData()
     return {
       homeTeam,
       awayTeam,
-      homePG: computed(()=>store.state.game.homePG)
+      homePGID: computed(()=>store.state.game.homePG),
+      homePG: computed(() => {
+        return homeTeam.roster.find(player=>player.id == store.state.game.homePG)
+      })
+      
     }
 }

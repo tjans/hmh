@@ -53,7 +53,8 @@
     <div style="height:200px; background:#6CC;">
         <button class='btn btn-dark m-1' @click="flipFac">Flip</button>
         <button class='btn btn-dark m-1' @click="newPeriod">New Period</button>
-        <button class='btn btn-danger m-1' @click="debug">Debug</button>
+        <button class='btn btn-danger m-1' @click="debugSet">Set Player</button>
+        <button class='btn btn-danger m-1' @click="debugShow">Debug Show</button>
     </div>
 </template>
 
@@ -79,7 +80,7 @@ export default {
   },
   setup() { 
     const store = useStore()
-      
+    
     // Get all the information about the game
     const {
         homeTeam, 
@@ -88,11 +89,19 @@ export default {
     } = useGameData()
 
     // methods
-    const debug = () => {
-        console.log('setting homePG to ' + store.state.game.homePG)
+    const selectPosition = (position) => {
+        let gameState = {...store.state.game}
+        gameState.selectedPosition = position
+        store.commit('game/update', gameState)
+    }
+
+    const debugSet = () => {
         store.commit('game/setHomePG', 1);
     }
 
+    const debugShow = () => {
+        console.log(homePG.value) // computed returns a reactive reference, need to use "value" here
+    }
     //console.log('PG has player : ', homePositions.PG.value, homePositions.PG.value != null)
 
     return {
@@ -101,7 +110,10 @@ export default {
         awayTeam,
         homePG,
         // function
-        debug
+        selectPosition,
+        debugSet,
+        debugShow
+
     }
   }
 }
