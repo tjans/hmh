@@ -1,8 +1,8 @@
 <template>
     <div style="display:flex; align-items: stretch;">
        <div class="home-container">
-           <div class="team-header" style="background-color:#024813; color:white;">
-              City Mascot
+           <div class="team-header" :style="{backgroundColor:homeTeam.primaryColor, color: homeTeam.textColor}">
+              {{homeTeam.city}} {{homeTeam.mascot}}
            </div>
 
            <div 
@@ -12,7 +12,7 @@
        </div>
        
        <div class="middle-container">
-           <score-section homeStyles="homeStyles" awayStyles="awayStyles" />
+           <score-section :home-team="homeTeam" :away-team="awayTeam" />
 
            <div class="court-container">
                <div class="floor">
@@ -21,7 +21,7 @@
 
                <div style='color:white; font-weight:bold; font-size:16pt;'>FISERV FORUM</div>
 
-                <court-position @click="selectPosition('homePG')" team="home" position="PG" player="homePositions.PG" styles="homeStyles" isSelected="selectedPosition == 'homePG'"  />
+                <court-position @click="selectPosition('homePG')" position="PG" :team="homeTeam" :player="homePositions.PG"  />
                 <!-- <court-position @click="selectPosition('homeSF')" team="home" position="SF" :player="homePositions.homeSF" :styles="homeStyles"  :isSelected="selectedPosition == 'homeSF'"  />
                 <court-position @click="selectPosition('homeC')" team="home" position="C" :player="homePositions.homeC" :styles="homeStyles"  :isSelected="selectedPosition == 'homeC'"  />
                 <court-position @click="selectPosition('homePF')" team="home" position="PF" :player="homePositions.homePF" :styles="homeStyles"  :isSelected="selectedPosition == 'homePF'"  />
@@ -39,8 +39,8 @@
        </div>
 
        <div class="away-container">
-           <div class="team-header" style="background-color:#024813; color:white;">
-              City Mascot
+           <div class="team-header" :style="{backgroundColor:awayTeam.primaryColor, color: awayTeam.textColor}">
+              {{awayTeam.city}} {{awayTeam.mascot}}
            </div>
 
            <div 
@@ -58,19 +58,13 @@
 </template>
 
 
-
-
-
-
-
-
-
-
-
-
 <script>
+/**************************************************
+    Script section
+**************************************************/
 import ScoreSection from './ScoreSection.vue';
 import CourtPosition from './CourtPosition.vue';
+import useGameData from '@/composables/useGameData'
 import { useStore, mapState } from 'vuex'
 import Debug from './Debug.vue';
 
@@ -82,9 +76,32 @@ export default {
     CourtPosition,
     Debug
   },
-  setup() {
-      return {
-      }
+  setup() { 
+    const store = useStore()
+      
+    // Get all the information about the game
+    const {
+        homeTeam, 
+        awayTeam,
+        homePositions
+    } = useGameData()
+
+    // methods
+    const debug = () => {
+        store.commit('game/setHomePG', 1);
+    }
+
+    console.log('PG has player : ', homePositions.PG.value, homePositions.PG.value != null)
+
+    return {
+        // game data
+        homeTeam,
+        awayTeam,
+        homePositions,
+
+        // function
+        debug
+    }
   }
 }
 </script>
@@ -135,72 +152,13 @@ export default {
     background-image:url(/images/court.png)
 }
 
-.home-player {
-    background-color:#024813;
-    border:2px solid white;
-    color:white;
-}
-.away-player {
-    background-color:black;
-    border:2px solid white;
-    color:white;
-}
+
 
 .player {
     position:absolute;
     padding:5px;
     width:200px;
     cursor:pointer;
-}
-
-.home-PG {
-    top:250px;
-    left:250px;
-}
-
-.home-SF {
-    top:150px;
-    left:250px;
-}
-
-.home-SG {
-    top:350px;
-    left:250px;
-}
-
-.home-PF {
-    top:450px;
-    left:250px;
-}
-
-.home-C {
-    top:50px;
-    left:250px;
-}
-
-.away-PG {
-    top:250px;
-    right:245px;
-}
-
-.away-SF {
-    top:150px;
-    right:245px;
-}
-
-.away-SG {
-    top:350px;
-    right:245px;
-}
-
-.away-PF {
-    top:450px;
-    right:245px;
-}
-
-.away-C {
-    top:50px;
-    right:245px;
 }
 
 .roster-player {

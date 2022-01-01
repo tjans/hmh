@@ -1,26 +1,26 @@
 <template>
     <div class="score-container">
             <div class="home-team team">
-                <div style="background-color:black; color: white; border:2px solid white;">
-                    City Mascot
-                    <span class="dot"></span>
+                <div :style="{backgroundColor:homeTeam.primaryColor, color: homeTeam.textColor, border:'2px solid ' + homeTeam.accentColor}">
+                    {{homeTeam.city}} {{homeTeam.mascot}}
+                    <span v-if="possession == 'h'" class="dot"></span>
                 </div>
-                <div class="team-score">0</div>
-                <div>Fouls: 0</div>
+                <div class="team-score">{{homeScore}}</div>
+                <div>Fouls: {{homeFouls}}</div>
             </div>
 
             <div class="clock-area">
-                <div class='period'>1</div>
-                12:00
+                <div class='period'>{{period}}</div>
+                11:57
             </div>
 
             <div class="away-team team">
-                <div style="background-color:black; color: white; border:2px solid white;">
-                    City Mascot
-                    <span class="dot"></span>
+                <div :style="{backgroundColor:awayTeam.primaryColor, color: awayTeam.textColor, border:'2px solid ' + awayTeam.accentColor}">
+                    {{awayTeam.city}} {{awayTeam.mascot}}
+                    <span v-if="possession == 'v'" class="dot"></span>
                 </div>
-                <div class="team-score">0</div>
-                <div>Fouls: 0</div>
+                <div class="team-score">{{awayScore}}</div>
+                <div>Fouls: {{awayFouls}}</div>
             </div>
         </div>
 </template>
@@ -28,16 +28,25 @@
 
 
 <script>
-import { useStore } from 'vuex'
+import { useStore, mapState } from 'vuex'
 import { computed } from 'vue'
 import useGameData from '@/composables/useGameData'
 
 export default {
   name: 'ScoreSection',
-  props: [],
-  setup(props) {      
-      return {
-      }
+  props: ['homeTeam','awayTeam'],
+  setup() {  
+    const store = useStore()
+
+    return {
+      period: computed(()=>store.state.game.period),
+      homeScore: computed(()=>store.state.game.homeScore),
+      homeFouls: computed(()=>store.state.game.homeFouls),
+      awayScore: computed(()=>store.state.game.awayScore),
+      awayFouls: computed(()=>store.state.game.awayFouls),
+      possession: computed(()=>store.state.game.possession),
+      clock: computed(()=>store.getters['game/clockDisplay'])
+    }
   }
 }
 </script>
