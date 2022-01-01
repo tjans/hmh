@@ -7,7 +7,7 @@
 
            <div 
             class="roster-player">
-             FirstName LastName
+             {FirstName LastName}
            </div>
        </div>
        
@@ -20,8 +20,7 @@
                </div>                
 
                <div style='color:white; font-weight:bold; font-size:16pt;'>FISERV FORUM</div>
-
-                <court-position @click="selectPosition('homePG')" position="PG" :team="homeTeam" :player="homePG"  />
+                <court-position @click="selectPosition('homePG')" position="PG" :team="homeTeam" :player="courtPositions.homePG.value"  />
                 <!-- <court-position @click="selectPosition('homeSF')" team="home" position="SF" :player="homePositions.homeSF" :styles="homeStyles"  :isSelected="selectedPosition == 'homeSF'"  />
                 <court-position @click="selectPosition('homeC')" team="home" position="C" :player="homePositions.homeC" :styles="homeStyles"  :isSelected="selectedPosition == 'homeC'"  />
                 <court-position @click="selectPosition('homePF')" team="home" position="PF" :player="homePositions.homePF" :styles="homeStyles"  :isSelected="selectedPosition == 'homePF'"  />
@@ -67,7 +66,7 @@ import ScoreSection from './ScoreSection.vue';
 import CourtPosition from './CourtPosition.vue';
 import useGameData from '@/composables/useGameData'
 import { useStore, mapState } from 'vuex'
-import {computed} from 'vue'
+import {computed, toRefs} from 'vue'
 import Debug from './Debug.vue';
 
 export default {
@@ -85,7 +84,7 @@ export default {
     const {
         homeTeam, 
         awayTeam,
-        homePG
+        courtPositions
     } = useGameData()
 
     // methods
@@ -101,7 +100,7 @@ export default {
     }
 
     const debugShow = () => {
-        console.log(homePG.value) // computed returns a reactive reference, need to use "value" here
+        console.log(courtPositions.homePG.value) // computed returns a reactive reference, need to use "value" here
     }
     //console.log('PG has player : ', homePositions.PG.value, homePositions.PG.value != null)
 
@@ -109,7 +108,8 @@ export default {
         // game data
         homeTeam,
         awayTeam,
-        homePG,
+        courtPositions,
+
         // function
         selectPosition,
         debugSet,
