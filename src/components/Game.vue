@@ -21,7 +21,7 @@
 
                <div style='color:white; font-weight:bold; font-size:16pt;'>FISERV FORUM</div>
 
-                <court-position @click="selectPosition('homePG')" position="PG" :team="homeTeam" :player="homePositions.PG"  />
+                <court-position @click="selectPosition('homePG')" position="PG" :team="homeTeam" :player="homePG"  />
                 <!-- <court-position @click="selectPosition('homeSF')" team="home" position="SF" :player="homePositions.homeSF" :styles="homeStyles"  :isSelected="selectedPosition == 'homeSF'"  />
                 <court-position @click="selectPosition('homeC')" team="home" position="C" :player="homePositions.homeC" :styles="homeStyles"  :isSelected="selectedPosition == 'homeC'"  />
                 <court-position @click="selectPosition('homePF')" team="home" position="PF" :player="homePositions.homePF" :styles="homeStyles"  :isSelected="selectedPosition == 'homePF'"  />
@@ -66,6 +66,7 @@ import ScoreSection from './ScoreSection.vue';
 import CourtPosition from './CourtPosition.vue';
 import useGameData from '@/composables/useGameData'
 import { useStore, mapState } from 'vuex'
+import {computed} from 'vue'
 import Debug from './Debug.vue';
 
 export default {
@@ -83,22 +84,22 @@ export default {
     const {
         homeTeam, 
         awayTeam,
-        homePositions
+        homePG
     } = useGameData()
 
     // methods
     const debug = () => {
+        console.log('setting homePG to ' + store.state.game.homePG)
         store.commit('game/setHomePG', 1);
     }
 
-    console.log('PG has player : ', homePositions.PG.value, homePositions.PG.value != null)
+    //console.log('PG has player : ', homePositions.PG.value, homePositions.PG.value != null)
 
     return {
         // game data
         homeTeam,
         awayTeam,
-        homePositions,
-
+        homePG,
         // function
         debug
     }

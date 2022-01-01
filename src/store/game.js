@@ -19,6 +19,7 @@ const game = {
     mutations: {
       setHomePG(state, newState)
       {
+        console.log(newState)
         state.homePG = newState
       },
       update (state, newState) {
