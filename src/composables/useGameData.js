@@ -8,77 +8,53 @@ export default function useGameData()
     const store = useStore()
     const pStore = usePersistentStore()
     let teams = pStore.load('teams')
+    
+    // Teams
+    const homeTeam = computed(() => {
+        return teams.find(team=>team.id == store.state.game.homeId)
+    });
 
-    const homePlayers = ref([]);
-    const awayPlayers = ref([]);
+    const awayTeam = computed(() => {
+        return teams.find(team=>team.id == store.state.game.awayId)
+    });
 
-    const gameData = ref({
-        homeTeamId: 1, // get these from the game info in the DB
-        awayTeamId: 2,
-        
-        homePGId: null,
-        homeSGId: null,
-        homeSFId: null,
-        homePFId: null,
-        homeCId: null,
-
-        awayPGId: null,
-        awaySFId: null,
-        awayPFId: null,
-        awaySGId: null,
-        awayCId: null,
-
-        homePlayers,
-        awayPlayers
-
+    // Home Positions
+    const homePG = computed(()=>{
+        return homeTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.homePG)
+    })
+    const homeSG = computed(()=>{
+        return homeTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.homeSG)
+    })
+    const homeSF = computed(()=>{
+        return homeTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.homeSF)
+    })
+    const homePF = computed(()=>{
+        return homeTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.homePF)
+    })
+    const homeC = computed(()=>{
+        return homeTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.homeC)
     })
 
-      homePlayers.value = []
-      awayPlayers.value = []
+    // Away Positions
+    const awayPG = computed(()=>{
+        return awayTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.awayPG)
+    })
+    const awaySF = computed(()=>{
+        return awayTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.awaySF)
+    })
+    const awaySG = computed(()=>{
+        return awayTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.awaySG)
+    })
+    const awayPF = computed(()=>{
+        return awayTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.awayPF)
+    })
+    const awayC = computed(()=>{
+        return awayTeam.value.roster.find(player=>player.id == store.state.game.courtPositions.awayC)
+    })
 
-      // Teams
-      const homeTeam = computed(() => {
-        return teams.find(team=>team.id == store.state.game.homeId)
-      });
+    // Selected items
+    const selectedPosition = computed(()=> store.state.game.selectedPosition)
 
-      const awayTeam = computed(() => {
-        return teams.find(team=>team.id == store.state.game.awayId)
-      });
-
-      // Home Positions
-      const homePG = computed(()=>{
-          return gameData.value.homePlayers.find(player=>player.Id == gameData.value.homePGId)
-      })
-      const homeSG = computed(()=>{
-          return gameData.value.homePlayers.find(player=>player.Id == gameData.value.homeSGId)
-      })
-      const homeSF = computed(()=>{
-          return gameData.value.homePlayers.find(player=>player.Id == gameData.value.homeSFId)
-      })
-      const homePF = computed(()=>{
-          return gameData.value.homePlayers.find(player=>player.Id == gameData.value.homePFId)
-      })
-      const homeC = computed(()=>{
-          return gameData.value.homePlayers.find(player=>player.Id == gameData.value.homeCId)
-      })
-
-      // Away Positions
-      const awayPG = computed(()=>{
-          return gameData.value.awayPlayers.find(player=>player.Id == gameData.value.awayPGId)
-      })
-      const awaySF = computed(()=>{
-          return gameData.value.awayPlayers.find(player=>player.Id == gameData.value.awaySFId)
-      })
-      const awaySG = computed(()=>{
-          return gameData.value.awayPlayers.find(player=>player.Id == gameData.value.awaySGId)
-      })
-      const awayPF = computed(()=>{
-          return gameData.value.awayPlayers.find(player=>player.Id == gameData.value.awayPFId)
-      })
-      const awayC = computed(()=>{
-          return gameData.value.awayPlayers.find(player=>player.Id == gameData.value.awayCId)
-      })
-    
     const homeStyles = {
         headerFG: 'black',
         headerBG: 'white',
@@ -98,8 +74,22 @@ export default function useGameData()
     return {
         homeStyles,
         awayStyles,
-        gameData,
         homeTeam,
-        awayTeam
+        awayTeam,
+        selectedPosition,
+        homePositions: {
+            PG: homePG,
+            SG: homeSG,
+            PF: homePF,
+            SF: homeSF,
+            C: homeC
+        },
+        awayPositions: {
+            PG: awayPG,
+            SG: awaySG,
+            PF: awayPF,
+            SF: awaySF,
+            C: awayC
+        }
     }
 }

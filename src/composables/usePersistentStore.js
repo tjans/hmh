@@ -17,7 +17,10 @@ export default function usePersistentStore() {
     const fullPath = appPath + dataFile + '.json'
     if(fs.existsSync(fullPath))
     {
-        return JSON.parse(fs.readFileSync(fullPath, 'utf8'))
+        let fileData = fs.readFileSync(fullPath, 'utf8');
+        if(!fileData) return null;
+        
+        return JSON.parse(fileData)
     }
     
     return null;

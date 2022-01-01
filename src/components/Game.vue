@@ -1,19 +1,18 @@
 <template>
     <div style="display:flex; align-items: stretch;">
        <div class="home-container">
-           <div class="team-header" :style="{backgroundColor:homeStyles.bodyBG, color:homeStyles.bodyFG, border:'0px solid ' + homeStyles.border}">
-              {{homeTeam.city}} {{homeTeam.mascot}}
+           <div class="team-header" style="background-color:#024813; color:white;">
+              City Mascot
            </div>
 
-           <div v-for="(player) in homeTeam.roster" 
-            class="roster-player" 
-            :key="player.id" @click="selectPlayer(player.id)">
-             {{ player.firstName }}  {{ player.lastName }}
+           <div 
+            class="roster-player">
+             FirstName LastName
            </div>
        </div>
        
        <div class="middle-container">
-           <score-section :homeStyles="homeStyles" :awayStyles="awayStyles" />
+           <score-section homeStyles="homeStyles" awayStyles="awayStyles" />
 
            <div class="court-container">
                <div class="floor">
@@ -22,30 +21,31 @@
 
                <div style='color:white; font-weight:bold; font-size:16pt;'>FISERV FORUM</div>
 
-                <court-player @click="selectPosition('homePG')" team="home" position="PG" :player="gameData.homePG" :styles="homeStyles"  />
-                <court-player @click="selectPosition('homeSF')" team="home" position="SF" :player="gameData.homeSF" :styles="homeStyles"  />
-                <court-player @click="selectPosition('homeC')" team="home" position="C" :player="gameData.homeC" :styles="homeStyles"  />
-                <court-player @click="selectPosition('homePF')" team="home" position="PF" :player="gameData.homePF" :styles="homeStyles"  />
-                <court-player @click="selectPosition('homeSG')" team="home" position="SG" :player="gameData.homeSG" :styles="homeStyles"  />
+                <court-position @click="selectPosition('homePG')" team="home" position="PG" player="homePositions.PG" styles="homeStyles" isSelected="selectedPosition == 'homePG'"  />
+                <!-- <court-position @click="selectPosition('homeSF')" team="home" position="SF" :player="homePositions.homeSF" :styles="homeStyles"  :isSelected="selectedPosition == 'homeSF'"  />
+                <court-position @click="selectPosition('homeC')" team="home" position="C" :player="homePositions.homeC" :styles="homeStyles"  :isSelected="selectedPosition == 'homeC'"  />
+                <court-position @click="selectPosition('homePF')" team="home" position="PF" :player="homePositions.homePF" :styles="homeStyles"  :isSelected="selectedPosition == 'homePF'"  />
+                <court-position @click="selectPosition('homeSG')" team="home" position="SG" :player="homePositions.homeSG" :styles="homeStyles"  :isSelected="selectedPosition == 'homeSG'"  /> -->
 
                 <!-- Away Players -->
 
-                <court-player team="away" position="PG" :player="gameData.awayPG" :styles="awayStyles"  />
-                <court-player team="away" position="SF" :player="gameData.awaySF" :styles="awayStyles"  />
-                <court-player team="away" position="PF" :player="gameData.awayPF" :styles="awayStyles"  />
-                <court-player team="away" position="C" :player="gameData.awayC" :styles="awayStyles"  />
-                <court-player team="away" position="SG" :player="gameData.awaySG" :styles="awayStyles"  />
+                <!-- <court-position @click="selectPosition('awayPG')" team="away" position="PG" :player="awayPositions.awayPG" :styles="awayStyles" :isSelected="selectedPosition == 'awayPG'"  />
+                <court-position @click="selectPosition('awaySF')" team="away" position="SF" :player="awayPositions.awaySF" :styles="awayStyles"  :isSelected="selectedPosition == 'awaySF'"  />
+                <court-position @click="selectPosition('awayC')" team="away" position="C" :player="awayPositions.awayC" :styles="awayStyles"  :isSelected="selectedPosition == 'awayC'"  />
+                <court-position @click="selectPosition('awayPF')" team="away" position="PF" :player="awayPositions.awayPF" :styles="awayStyles"  :isSelected="selectedPosition == 'awayPF'"  />
+                <court-position @click="selectPosition('awaySG')" team="away" position="SG" :player="awayPositions.awaySG" :styles="awayStyles"  :isSelected="selectedPosition == 'awaySG'"  /> -->
                 
            </div>
        </div>
 
        <div class="away-container">
-           <div class="team-header" :style="{backgroundColor:awayStyles.bodyBG, color:awayStyles.bodyFG, border:'0px solid ' + awayStyles.border}">
-               {{awayTeam.city}} {{awayTeam.mascot}}
-            </div>
-           
-           <div v-for="player in awayTeam.roster" :key="player.id" @click="selectPlayer(player.id)" class="roster-player">
-             {{ player.firstName }}  {{ player.lastName }}
+           <div class="team-header" style="background-color:#024813; color:white;">
+              City Mascot
+           </div>
+
+           <div 
+            class="roster-player">
+             FirstName LastName
            </div>
        </div>
     </div>
@@ -53,84 +53,59 @@
     <div style="height:200px; background:#6CC;">
         <button class='btn btn-dark m-1' @click="flipFac">Flip</button>
         <button class='btn btn-dark m-1' @click="newPeriod">New Period</button>
-
-
-        <!-- 
-        <button class='btn btn-dark m-1' @click="incrementFouls">PF</button>
-        <button class='btn btn-dark m-1'>2PA</button>
-        <button class='btn btn-dark m-1'>2PM</button>
-        <button class='btn btn-dark m-1'>3PM</button>
-        <button class='btn btn-dark m-1'>FTA</button>
-        <button class='btn btn-dark m-1'>FTM</button>
-        <button class='btn btn-dark m-1'>ORB</button>
-        <button class='btn btn-dark m-1'>DRB</button>
-        <button class='btn btn-dark m-1'>BLK</button>
-        <button class='btn btn-dark m-1'>STL</button>
-        <button class='btn btn-dark m-1'>D6</button>
-        <button class='btn btn-dark m-1'>2D6</button>
-        <button class='btn btn-dark m-1'>Chips</button>
-        <button class='btn btn-dark m-1'>Lightning</button> -->
-
+        <button class='btn btn-danger m-1' @click="debug">Debug</button>
     </div>
 </template>
 
+
+
+
+
+
+
+
+
+
+
+
 <script>
 import ScoreSection from './ScoreSection.vue';
-import CourtPlayer from './CourtPlayer.vue';
-import useGameData from '@/composables/useGameData'
+import CourtPosition from './CourtPosition.vue';
 import { useStore, mapState } from 'vuex'
+import Debug from './Debug.vue';
 
 export default {
   name: 'Game',
   props: {},
   components: {
     ScoreSection,
-    CourtPlayer
+    CourtPosition,
+    Debug
   },
   setup() {
-
-      const store = useStore()
-      
-      const selectPosition = (position) => {
-          console.log(position)
-          alert('position selected ' + position);
-      }
-
-      const selectPlayer = (id) => {
-          console.log(id)
-          alert('player selected ' + id);
-      }
-
-      const incrementFouls = () => {
-          let gameState = {...store.state.game}
-          gameState.homeFouls++
-          store.commit('game/update', gameState);
-      }
-
-      const flipFac = () => {
-          store.commit('game/tick', -12)
-      }
-
-      const newPeriod = () => {
-          store.commit('game/newPeriod')
-      }
-
-      const { homeStyles, awayStyles, gameData, homeTeam, awayTeam } = useGameData()
-
       return {
-          gameData,
-          homeStyles,
-          awayStyles,
-          selectPosition,
-          selectPlayer,
-          incrementFouls,
-          flipFac,
-          newPeriod,
-          homeTeam, awayTeam
       }
   }
 }
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
