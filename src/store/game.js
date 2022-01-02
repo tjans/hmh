@@ -10,7 +10,18 @@
     awayFouls: 4,
     possession: 'h',
     homePositions: {
-      PG: null
+      PG: null,
+      PF: null,
+      SG: null,
+      SF: null,
+      C: null
+    },
+    awayPositions: {
+      PG: null,
+      PF: null,
+      SG: null,
+      SF: null,
+      C: null
     }
   }
 
@@ -18,10 +29,6 @@ const game = {
   namespaced: true,
   state: () => (defaultState),
     mutations: {
-      setHomePGId(state, newState)
-      {
-        state.homePositions.PG = newState
-      },
       update (state, newState) {
         Object.assign(state, newState)
         //persistentStore.save('game',newState)

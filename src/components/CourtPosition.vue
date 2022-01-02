@@ -1,5 +1,5 @@
 <template>
-        <div class="player selected home-PG" :style="{backgroundColor:team.primaryColor, color: team.textColor, borderColor:team.accentColor}">
+        <div class="player" :class="[side + '-' + position, {'selected': isSelected}]" :style="{backgroundColor:team.primaryColor, color: team.textColor, borderColor:team.accentColor}">
             <div v-if="player">
                 <div>
                     [{{position}}] {{player.firstName}} {{player.lastName}}
@@ -7,7 +7,7 @@
                 <div>Fouls: 2, Points: 5</div>
             </div>
             <div v-else>
-                PG - No player
+                {{position}} - No player
             </div>
         </div>
 </template>
@@ -17,9 +17,8 @@ import { toRefs } from 'vue'
 
 export default {
   name: 'CourtPlayer',
-  props: ['team','player', 'position'],
-  setup(props) {
-  }
+  props: ['team','player', 'position', 'side', 'isSelected'],
+  setup() {}
 }
 </script>  
 

@@ -12,15 +12,16 @@ export default function useGameData()
     const homeTeam = teams.find(team=>team.id == store.state.game.homeTeamId)
     const awayTeam = teams.find(team=>team.id == store.state.game.awayTeamId)
 
-
-
     return {
       homeTeam,
       awayTeam,
+      selectedPosition: 'homePG',
       courtPositions: {
-        homePG: computed(() => {
-            return homeTeam.roster.find(player=>player.id == store.state.game.homePositions.PG)
-        })
+        homePG: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.PG)),
+        homePF: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.PF)),
+        homeSG: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.SG)),
+        homeSF: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.SF)),
+        homeC: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.C)),
       }      
     }
 }

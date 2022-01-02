@@ -5,9 +5,8 @@
               {{homeTeam.city}} {{homeTeam.mascot}}
            </div>
 
-           <div 
-            class="roster-player">
-             {FirstName LastName}
+           <div class="roster-player" v-for="player in homeTeam.roster" :key="player.id">
+             {{player.position}} - {{player.firstName}} {{player.lastName}}
            </div>
        </div>
        
@@ -20,11 +19,11 @@
                </div>                
 
                <div style='color:white; font-weight:bold; font-size:16pt;'>FISERV FORUM</div>
-                <court-position @click="selectPosition('homePG')" position="PG" :team="homeTeam" :player="courtPositions.homePG.value"  />
-                <!-- <court-position @click="selectPosition('homeSF')" team="home" position="SF" :player="homePositions.homeSF" :styles="homeStyles"  :isSelected="selectedPosition == 'homeSF'"  />
-                <court-position @click="selectPosition('homeC')" team="home" position="C" :player="homePositions.homeC" :styles="homeStyles"  :isSelected="selectedPosition == 'homeC'"  />
-                <court-position @click="selectPosition('homePF')" team="home" position="PF" :player="homePositions.homePF" :styles="homeStyles"  :isSelected="selectedPosition == 'homePF'"  />
-                <court-position @click="selectPosition('homeSG')" team="home" position="SG" :player="homePositions.homeSG" :styles="homeStyles"  :isSelected="selectedPosition == 'homeSG'"  /> -->
+                <court-position @click="setPosition('PG', 'h')" position="PG" :team="homeTeam" :player="courtPositions.homePG.value" side='home' :isSelected="selectedPosition == 'homePG'"  />
+                <court-position @click="setPosition('PF', 'h')" position="PF" :team="homeTeam" :player="courtPositions.homePF.value" side='home'  />
+                <court-position @click="setPosition('SG', 'h')" position="SG" :team="homeTeam" :player="courtPositions.homeSG.value" side='home'  />
+                <court-position @click="setPosition('SF', 'h')" position="SF" :team="homeTeam" :player="courtPositions.homeSF.value" side='home'  />
+                <court-position @click="setPosition('C', 'h')" position="C" :team="homeTeam" :player="courtPositions.homeC.value" side='home'  />
 
                 <!-- Away Players -->
 
@@ -84,34 +83,44 @@ export default {
     const {
         homeTeam, 
         awayTeam,
+        selectedPosition,
         courtPositions
     } = useGameData()
 
     // methods
-    const selectPosition = (position) => {
+    const setPosition = (position, team) => {
+        let newValue = (store.state.game.homePositions.PG == 1) ? 2 : 1
         let gameState = {...store.state.game}
-        gameState.selectedPosition = position
-        store.commit('game/update', gameState)
+
+        let teamSide = (team == 'h' ? 'homePositions' : 'awayPositions')
+        gameState[teamSide][position] = newValue
+
+        store.commit('game/update', gameState);
     }
 
     const debugSet = () => {
         let newValue = (store.state.game.homePositions.PG == 1) ? 2 : 1
-        store.commit('game/setHomePGId', newValue);
+        let gameState = {...store.state.game}
+
+        gameState.homePositions['PG'] = newValue
+
+        store.commit('game/update', gameState);
     }
 
     const debugShow = () => {
-        console.log(courtPositions.homePG.value) // computed returns a reactive reference, need to use "value" here
+        //console.log(courtPositions.homePG.value) // computed returns a reactive reference, need to use "value" here
+        console.log(selectedPosition)
     }
-    //console.log('PG has player : ', homePositions.PG.value, homePositions.PG.value != null)
 
     return {
         // game data
         homeTeam,
         awayTeam,
         courtPositions,
+        selectedPosition,
 
         // function
-        selectPosition,
+        setPosition,
         debugSet,
         debugShow
 
