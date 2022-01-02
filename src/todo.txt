@@ -16,3 +16,9 @@ Coaching strategy (complacent, energized, etc)
 
 Player stats
     Change color for foul trouble, resting, etc
+
+Software version
+Installation
+Updates
+
+Test adding a player and going back into a game to see if he shows up

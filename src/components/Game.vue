@@ -5,7 +5,7 @@
               {{homeTeam.city}} {{homeTeam.mascot}}
            </div>
 
-           <div class="roster-player" v-for="player in homeTeam.roster" :key="player.id">
+           <div class="roster-player" v-for="player in homeTeam.roster" :key="player.id" @click="selectPlayer(player.id)">
              {{player.position}} - {{player.firstName}} {{player.lastName}}
            </div>
        </div>
@@ -19,20 +19,89 @@
                </div>                
 
                <div style='color:white; font-weight:bold; font-size:16pt;'>FISERV FORUM</div>
-                <court-position @click="setPosition('PG', 'h')" position="PG" :team="homeTeam" :player="courtPositions.homePG.value" side='home' :isSelected="selectedPosition == 'homePG'"  />
-                <court-position @click="setPosition('PF', 'h')" position="PF" :team="homeTeam" :player="courtPositions.homePF.value" side='home'  />
-                <court-position @click="setPosition('SG', 'h')" position="SG" :team="homeTeam" :player="courtPositions.homeSG.value" side='home'  />
-                <court-position @click="setPosition('SF', 'h')" position="SF" :team="homeTeam" :player="courtPositions.homeSF.value" side='home'  />
-                <court-position @click="setPosition('C', 'h')" position="C" :team="homeTeam" :player="courtPositions.homeC.value" side='home'  />
+
+                <court-position 
+                    @click="setPosition('homePG')" 
+                    position="PG" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homePG.value" 
+                    side='home' 
+                    :isSelected="selectedPosition == 'homePG'"  />
+
+                <court-position 
+                    @click="setPosition('homePF')" 
+                    position="PF" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homePF.value" 
+                    side='home'  
+                    :isSelected="selectedPosition == 'homePF'" />
+
+                <court-position 
+                    @click="setPosition('homeSG')" 
+                    position="SG" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homeSG.value" 
+                    side='home' 
+                    :isSelected="selectedPosition == 'homeSG'" />
+                
+                <court-position 
+                    @click="setPosition('homeSF')" 
+                    position="SF" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homeSF.value" 
+                    side='home' 
+                    :isSelected="selectedPosition == 'homeSF'" />
+
+                <court-position 
+                    @click="setPosition('homeC')" 
+                    position="C" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homeC.value" 
+                    side='home' 
+                    :isSelected="selectedPosition == 'homeC'" />
 
                 <!-- Away Players -->
 
-                <court-position @click="setPosition('PG', 'a')" position="PG" :team="awayTeam" :player="courtPositions.awayPG.value" side='away' :isSelected="selectedPosition == 'awayPG'"  />
-                <court-position @click="setPosition('PF', 'a')" position="PF" :team="awayTeam" :player="courtPositions.awayPF.value" side='away'  />
-                <court-position @click="setPosition('SG', 'a')" position="SG" :team="awayTeam" :player="courtPositions.awaySG.value" side='away'  />
-                <court-position @click="setPosition('SF', 'a')" position="SF" :team="awayTeam" :player="courtPositions.awaySF.value" side='away'  />
-                <court-position @click="setPosition('C', 'a')" position="C" :team="awayTeam" :player="courtPositions.awayC.value" side='away'  />
+                <court-position 
+                    @click="setPosition('awayPG')" 
+                    position="PG" 
+                    :team="awayTeam" 
+                    :player="courtPositions.awayPG.value" 
+                    side='away' 
+                    :isSelected="selectedPosition == 'awayPG'"  />
                 
+                <court-position 
+                    @click="setPosition('awayPF')" 
+                    position="PF" 
+                    :team="awayTeam" 
+                    :player="courtPositions.awayPF.value" 
+                    side='away' 
+                    :isSelected="selectedPosition == 'awayPF'" />
+
+                <court-position 
+                    @click="setPosition('awaySG')" 
+                    position="SG" 
+                    :team="awayTeam" 
+                    :player="courtPositions.awaySG.value" 
+                    side='away' 
+                    :isSelected="selectedPosition == 'awaySG'" />
+                
+                <court-position 
+                    @click="setPosition('awaySF')" 
+                    position="SF" 
+                    :team="awayTeam" 
+                    :player="courtPositions.awaySF.value" 
+                    side='away' 
+                    :isSelected="selectedPosition == 'awaySF'" />
+                    
+                <court-position 
+                    @click="setPosition('awayC')" 
+                    position="C" 
+                    :team="awayTeam" 
+                    :player="courtPositions.awayC.value" 
+                    side='away' 
+                    :isSelected="selectedPosition == 'awayC'" />
+
            </div>
        </div>
 
@@ -41,9 +110,8 @@
               {{awayTeam.city}} {{awayTeam.mascot}}
            </div>
 
-           <div 
-            class="roster-player">
-             FirstName LastName
+           <div class="roster-player" v-for="player in awayTeam.roster" :key="player.id" @click="selectPlayer(player.id)">
+             {{player.position}} - {{player.firstName}} {{player.lastName}}
            </div>
        </div>
     </div>
@@ -88,14 +156,14 @@ export default {
     } = useGameData()
 
     // methods
-    const setPosition = (position, team) => {
-        let newValue = (store.state.game.homePositions.PG == 1) ? 2 : 1
+    const setPosition = (courtPosition) => {
         let gameState = {...store.state.game}
-
-        let teamSide = (team == 'h' ? 'homePositions' : 'awayPositions')
-        gameState[teamSide][position] = newValue
-
+        gameState.selectedPosition = courtPosition
         store.commit('game/update', gameState);
+    }
+
+    const selectPlayer = (playerId) => {
+        alert(`Setting ${store.state.game.selectedPosition} to ${playerId}`);
     }
 
     const debugSet = () => {
@@ -121,6 +189,7 @@ export default {
 
         // function
         setPosition,
+        selectPlayer,
         debugSet,
         debugShow
 
