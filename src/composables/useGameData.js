@@ -17,17 +17,17 @@ export default function useGameData()
       awayTeam,
       selectedPosition: computed(()=>store.state.game.selectedPosition),
       courtPositions: {
-        homePG: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.PG)),
-        homePF: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.PF)),
-        homeSG: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.SG)),
-        homeSF: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.SF)),
-        homeC: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.C)),
+        homePG: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePG)),
+        homePF: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePF)),
+        homeSG: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homeSG)),
+        homeSF: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homeSF)),
+        homeC: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homeC)),
 
-        awayPG: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.PG)),
-        awayPF: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.PF)),
-        awaySG: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.SG)),
-        awaySF: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.SF)),
-        awayC: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.C)),
+        awayPG: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPG)),
+        awayPF: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPF)),
+        awaySG: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awaySG)),
+        awaySF: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awaySF)),
+        awayC: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayC)),
       }      
     }
 }

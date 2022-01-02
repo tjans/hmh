@@ -25,40 +25,35 @@
                     position="PG" 
                     :team="homeTeam" 
                     :player="courtPositions.homePG.value" 
-                    side='home' 
-                    :isSelected="selectedPosition == 'homePG'"  />
+                    court-position='homePG' />
 
                 <court-position 
                     @click="setPosition('homePF')" 
                     position="PF" 
                     :team="homeTeam" 
                     :player="courtPositions.homePF.value" 
-                    side='home'  
-                    :isSelected="selectedPosition == 'homePF'" />
+                    court-position='homePF' />
 
                 <court-position 
                     @click="setPosition('homeSG')" 
                     position="SG" 
                     :team="homeTeam" 
                     :player="courtPositions.homeSG.value" 
-                    side='home' 
-                    :isSelected="selectedPosition == 'homeSG'" />
+                    court-position='homeSG' />
                 
                 <court-position 
                     @click="setPosition('homeSF')" 
                     position="SF" 
                     :team="homeTeam" 
                     :player="courtPositions.homeSF.value" 
-                    side='home' 
-                    :isSelected="selectedPosition == 'homeSF'" />
+                    court-position='homeSF' />
 
                 <court-position 
                     @click="setPosition('homeC')" 
                     position="C" 
                     :team="homeTeam" 
                     :player="courtPositions.homeC.value" 
-                    side='home' 
-                    :isSelected="selectedPosition == 'homeC'" />
+                    court-position='homeC' />
 
                 <!-- Away Players -->
 
@@ -67,40 +62,35 @@
                     position="PG" 
                     :team="awayTeam" 
                     :player="courtPositions.awayPG.value" 
-                    side='away' 
-                    :isSelected="selectedPosition == 'awayPG'"  />
+                    court-position='awayPG'  />
                 
                 <court-position 
                     @click="setPosition('awayPF')" 
                     position="PF" 
                     :team="awayTeam" 
                     :player="courtPositions.awayPF.value" 
-                    side='away' 
-                    :isSelected="selectedPosition == 'awayPF'" />
+                    court-position='awayPF' />
 
                 <court-position 
                     @click="setPosition('awaySG')" 
                     position="SG" 
                     :team="awayTeam" 
                     :player="courtPositions.awaySG.value" 
-                    side='away' 
-                    :isSelected="selectedPosition == 'awaySG'" />
+                    court-position='awaySG' />
                 
                 <court-position 
                     @click="setPosition('awaySF')" 
                     position="SF" 
                     :team="awayTeam" 
                     :player="courtPositions.awaySF.value" 
-                    side='away' 
-                    :isSelected="selectedPosition == 'awaySF'" />
+                    court-position='awaySF' />
                     
                 <court-position 
                     @click="setPosition('awayC')" 
                     position="C" 
                     :team="awayTeam" 
                     :player="courtPositions.awayC.value" 
-                    side='away' 
-                    :isSelected="selectedPosition == 'awayC'" />
+                    court-position='awayC' />
 
            </div>
        </div>
@@ -163,7 +153,10 @@ export default {
     }
 
     const selectPlayer = (playerId) => {
-        alert(`Setting ${store.state.game.selectedPosition} to ${playerId}`);
+        //alert(`Setting ${store.state.game.selectedPosition} to ${playerId}`);
+        let gameState = {...store.state.game}
+        gameState[store.state.game.selectedPosition] = playerId
+        store.commit('game/update', gameState);
     }
 
     const debugSet = () => {

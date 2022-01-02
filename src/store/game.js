@@ -10,20 +10,16 @@
     awayFouls: 4,
     selectedPosition:null,
     possession: 'h',
-    homePositions: {
-      PG: null,
-      PF: null,
-      SG: null,
-      SF: null,
-      C: null
-    },
-    awayPositions: {
-      PG: null,
-      PF: null,
-      SG: null,
-      SF: null,
-      C: null
-    }
+    homePG: null,
+    homeSG: null,
+    homePF: null,
+    homeSF: null,
+    homeC: null,
+    awayPG: null,
+    awaySG: null,
+    awaySF: null,
+    awayPF: null,
+    awayC: null,
   }
 
 const game = {

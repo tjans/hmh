@@ -1,5 +1,5 @@
 <template>
-        <div class="player" :class="[side + '-' + position, {'selected': isSelected}]" :style="{backgroundColor:team.primaryColor, color: team.textColor, borderColor:team.accentColor}">
+        <div class="player" :class="[courtPosition, {'selected': isSelected}]" :style="{backgroundColor:team.primaryColor, color: team.textColor, borderColor:team.accentColor}">
             <div v-if="player">
                 <div>
                     [{{position}}] {{player.firstName}} {{player.lastName}}
@@ -13,64 +13,71 @@
 </template>
 
 <script>
-import { toRefs } from 'vue'
+import { useStore } from 'vuex'
+import { computed } from 'vue'
 
 export default {
   name: 'CourtPlayer',
-  props: ['team','player', 'position', 'side', 'isSelected'],
-  setup() {}
+  props: ['team','player', 'position', 'side', 'courtPosition'],
+  setup(props) {
+      const store = useStore()
+
+      return {
+          isSelected: computed(()=>store.state.game.selectedPosition == props.courtPosition)
+      }
+  }
 }
 </script>  
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.home-PG {
+.homePG {
     top:250px;
     left:200px;
 }
 
-.home-SF {
+.homeSF {
     top:150px;
     left:200px;
 }
 
-.home-SG {
+.homeSG {
     top:350px;
     left:200px;
 }
 
-.home-PF {
+.homePF {
     top:450px;
     left:200px;
 }
 
-.home-C {
+.homeC {
     top:50px;
     left:200px;
 }
 
-.away-PG {
+.awayPG {
     top:250px;
     right:195px;
 }
 
-.away-SF {
+.awaySF {
     top:150px;
     right:195px;
 }
 
-.away-SG {
+.awaySG {
     top:350px;
     right:195px;
 }
 
-.away-PF {
+.awayPF {
     top:450px;
     right:195px;
 }
 
-.away-C {
+.awayC {
     top:50px;
     right:195px;
 }
