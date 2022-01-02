@@ -52,27 +52,27 @@ export default {
 
 .away-PG {
     top:250px;
-    right:245px;
+    right:195px;
 }
 
 .away-SF {
     top:150px;
-    right:245px;
+    right:195px;
 }
 
 .away-SG {
     top:350px;
-    right:245px;
+    right:195px;
 }
 
 .away-PF {
     top:450px;
-    right:245px;
+    right:195px;
 }
 
 .away-C {
     top:50px;
-    right:245px;
+    right:195px;
 }
 .player {
     width:250px !important;

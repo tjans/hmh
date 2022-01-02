@@ -22,6 +22,12 @@ export default function useGameData()
         homeSG: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.SG)),
         homeSF: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.SF)),
         homeC: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.C)),
+
+        awayPG: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.PG)),
+        awayPF: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.PF)),
+        awaySG: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.SG)),
+        awaySF: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.SF)),
+        awayC: computed(() => awayTeam.roster.find(player=>player.id == store.state.game.awayPositions.C)),
       }      
     }
 }

@@ -27,11 +27,11 @@
 
                 <!-- Away Players -->
 
-                <!-- <court-position @click="selectPosition('awayPG')" team="away" position="PG" :player="awayPositions.awayPG" :styles="awayStyles" :isSelected="selectedPosition == 'awayPG'"  />
-                <court-position @click="selectPosition('awaySF')" team="away" position="SF" :player="awayPositions.awaySF" :styles="awayStyles"  :isSelected="selectedPosition == 'awaySF'"  />
-                <court-position @click="selectPosition('awayC')" team="away" position="C" :player="awayPositions.awayC" :styles="awayStyles"  :isSelected="selectedPosition == 'awayC'"  />
-                <court-position @click="selectPosition('awayPF')" team="away" position="PF" :player="awayPositions.awayPF" :styles="awayStyles"  :isSelected="selectedPosition == 'awayPF'"  />
-                <court-position @click="selectPosition('awaySG')" team="away" position="SG" :player="awayPositions.awaySG" :styles="awayStyles"  :isSelected="selectedPosition == 'awaySG'"  /> -->
+                <court-position @click="setPosition('PG', 'a')" position="PG" :team="awayTeam" :player="courtPositions.awayPG.value" side='away' :isSelected="selectedPosition == 'awayPG'"  />
+                <court-position @click="setPosition('PF', 'a')" position="PF" :team="awayTeam" :player="courtPositions.awayPF.value" side='away'  />
+                <court-position @click="setPosition('SG', 'a')" position="SG" :team="awayTeam" :player="courtPositions.awaySG.value" side='away'  />
+                <court-position @click="setPosition('SF', 'a')" position="SF" :team="awayTeam" :player="courtPositions.awaySF.value" side='away'  />
+                <court-position @click="setPosition('C', 'a')" position="C" :team="awayTeam" :player="courtPositions.awayC.value" side='away'  />
                 
            </div>
        </div>
