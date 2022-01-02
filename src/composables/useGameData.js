@@ -15,7 +15,7 @@ export default function useGameData()
     return {
       homeTeam,
       awayTeam,
-      selectedPosition: 'homePG',
+      selectedPosition: computed(()=>store.state.game.selectedPosition),
       courtPositions: {
         homePG: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.PG)),
         homePF: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePositions.PF)),

@@ -8,6 +8,7 @@
     awayScore: 3,
     homeFouls: 2,
     awayFouls: 4,
+    selectedPosition:'homePG',
     possession: 'h',
     homePositions: {
       PG: null,
