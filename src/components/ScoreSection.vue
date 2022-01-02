@@ -11,7 +11,7 @@
 
             <div class="clock-area">
                 <div class='period'>{{period}}</div>
-                11:57
+                {{clock}}
             </div>
 
             <div class="away-team team">

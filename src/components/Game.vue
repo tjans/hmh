@@ -106,11 +106,18 @@
        </div>
     </div>
 
-    <div style="height:200px; background:#6CC;">
-        <button class='btn btn-dark m-1' @click="flipFac">Flip</button>
-        <button class='btn btn-dark m-1' @click="newPeriod">New Period</button>
-        <button class='btn btn-danger m-1' @click="debugSet">Set Player</button>
-        <button class='btn btn-danger m-1' @click="debugShow">Debug Show</button>
+    <div style="height:200px; background:black; padding:10px">
+        <div style='border:1px solid #1A202C; padding:15px;'>
+            <div>
+                <button class='btn btn-light m-1' @click="updateClock(-12)">Flip</button>
+                <button class='btn btn-light m-1' @click="updateClock(12)">UnFlip</button>
+                <button class='btn btn-light m-1' @click="newPeriod">New Period</button>
+            </div>
+
+            <div v-if="selectedPosition">
+                <button class='btn btn-light m-1' @click="twoPointMade">2PM</button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -159,18 +166,23 @@ export default {
         store.commit('game/update', gameState);
     }
 
-    const debugSet = () => {
-        let newValue = (store.state.game.homePositions.PG == 1) ? 2 : 1
-        let gameState = {...store.state.game}
+    const twoPointMade = () => {
+        let id = store.state.game[store.state.game.selectedPosition];
 
-        gameState.homePositions['PG'] = newValue
-
-        store.commit('game/update', gameState);
+        if(id) {
+            store.commit('game/stat', {
+                id,
+                points:2
+            })
+        }
     }
 
-    const debugShow = () => {
-        //console.log(courtPositions.homePG.value) // computed returns a reactive reference, need to use "value" here
-        console.log(selectedPosition)
+    const updateClock = (seconds) => {
+        store.commit('game/tick', seconds)
+    }
+
+    const newPeriod = () => {
+        store.commit('game/newPeriod')
     }
 
     return {
@@ -183,9 +195,9 @@ export default {
         // function
         setPosition,
         selectPlayer,
-        debugSet,
-        debugShow
-
+        newPeriod,
+        updateClock,
+        twoPointMade
     }
   }
 }
