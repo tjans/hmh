@@ -4,15 +4,15 @@
     awayTeamId: 2,
     period: 1,
     seconds: 720,
-    homeScore: 2,
-    awayScore: 3,
-    homeFouls: 2,
-    awayFouls: 4,
-    selectedPosition:null,
+    homeScore: 0,
+    awayScore: 0,
+    homeFouls: 0,
+    awayFouls: 0,
+    selectedPosition:'homePF',
     possession: 'h',
     homePG: null,
     homeSG: null,
-    homePF: null,
+    homePF: 1,
     homeSF: null,
     homeC: null,
     awayPG: null,
@@ -29,25 +29,44 @@ const game = {
   state: () => (defaultState),
     mutations: {
       stat(state, payload) {
-        let side = null;
-        if(['homePG','homePF','homeSG', 'homeSF', 'homeC'].includes(state.selectedPosition)) {
-          side = 'homeStats';
+        let statSide = null;
+        let side = null
+
+        if(state.selectedPosition.includes('home')) {
+          statSide = 'homeStats';
+          side = 'home'
         }
-        else if(['awayPG','awayPF','awaySG', 'awaySF', 'awayC'].includes(state.selectedPosition)) {
-          side = 'awayStats'
+        else if(state.selectedPosition.includes('away')) {
+          statSide = 'awayStats'
+          side = 'away'
         }
 
-        if(side && payload.id)
+        if(statSide && payload.id)
         {
           // find the player
-          let player = state[side].find(p=>p.id == payload.id)
+          let player = state[statSide].find(p=>p.id == payload.id)
 
-          if(player) {
-            console.log(player)
-            // player has stats already, update the ones from the payload
+          if(!player) {
+            player = {
+              id: payload.id,
+              fouls:0,
+              made2:0,
+              made3:0,
+              attempt2:0,
+              attempt3:0,
+              FTA:0,
+              FTM:0
+            }
+
+            state[statSide].push(player)
           }
-          else {
-            state[side].push(payload)
+
+          for (const property in payload) {
+            if(property != "id") {
+              if(property in player) {
+                player[property]+=payload[property]
+              }
+            }
           }
         }
       },
@@ -94,7 +113,7 @@ const game = {
         let minutes = Math.floor(state.seconds/60);
         let secondsRemain = state.seconds - (minutes * 60)
         return minutes + ":" + secondsRemain.toString().padStart('2', '0');
-      }
+      },
     }
   };
 

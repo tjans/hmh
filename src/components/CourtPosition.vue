@@ -4,7 +4,7 @@
                 <div>
                     [{{position}}] {{player.firstName}} {{player.lastName}}
                 </div>
-                <div>Fouls: 2, Points: 5</div>
+                <div :class="{'foul-trouble':isFoulTrouble()}">Fouls: {{(stats.fouls ? stats.fouls : 0)}}, Points: {{points()}}</div>
             </div>
             <div v-else>
                 {{position}} - No player
@@ -18,12 +18,21 @@ import { computed } from 'vue'
 
 export default {
   name: 'CourtPlayer',
-  props: ['team','player', 'position', 'side', 'courtPosition'],
+  props: ['team', 'player', 'position','courtPosition', 'stats'],
   setup(props) {
       const store = useStore()
+    
+      const isFoulTrouble = () => {
+        return (props.stats.fouls > store.state.game.period)
+      }     
+      const points = () => {
+          return props.stats.made3 * 3 + props.stats.made2 * 2 + props.stats.FTM
+      }
 
       return {
-          isSelected: computed(()=>store.state.game.selectedPosition == props.courtPosition)
+          isFoulTrouble: computed(() => isFoulTrouble),
+          isSelected: computed(()=>store.state.game.selectedPosition == props.courtPosition),
+          points: computed(() => points)
       }
   }
 }
@@ -85,6 +94,9 @@ export default {
     width:250px !important;
 }
 
+.foul-trouble {
+    color:red
+}
 
 /* .player:hover {
     border-width:2px !important;

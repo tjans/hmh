@@ -8,6 +8,11 @@
            <div class="roster-player" v-for="player in homeTeam.roster" :key="player.id" @click="selectPlayer(player.id)">
              {{player.position}} - {{player.firstName}} {{player.lastName}}
            </div>
+
+           <h1>Stats</h1>
+            <div>
+                
+            </div>
        </div>
        
        <div class="middle-container">
@@ -25,6 +30,7 @@
                     position="PG" 
                     :team="homeTeam" 
                     :player="courtPositions.homePG.value" 
+                    :stats="homePGStats"
                     court-position='homePG' />
 
                 <court-position 
@@ -32,6 +38,7 @@
                     position="PF" 
                     :team="homeTeam" 
                     :player="courtPositions.homePF.value" 
+                    :stats="homePFStats"
                     court-position='homePF' />
 
                 <court-position 
@@ -39,13 +46,15 @@
                     position="SG" 
                     :team="homeTeam" 
                     :player="courtPositions.homeSG.value" 
+                    :stats="homeSGStats"
                     court-position='homeSG' />
                 
                 <court-position 
                     @click="setPosition('homeSF')" 
                     position="SF" 
                     :team="homeTeam" 
-                    :player="courtPositions.homeSF.value" 
+                    :player="courtPositions.homeSF.value"
+                    :stats="homeSFStats" 
                     court-position='homeSF' />
 
                 <court-position 
@@ -53,6 +62,7 @@
                     position="C" 
                     :team="homeTeam" 
                     :player="courtPositions.homeC.value" 
+                    :stats="homeCStats"
                     court-position='homeC' />
 
                 <!-- Away Players -->
@@ -62,6 +72,7 @@
                     position="PG" 
                     :team="awayTeam" 
                     :player="courtPositions.awayPG.value" 
+                    :stats="awayPGStats"
                     court-position='awayPG'  />
                 
                 <court-position 
@@ -69,6 +80,7 @@
                     position="PF" 
                     :team="awayTeam" 
                     :player="courtPositions.awayPF.value" 
+                    :stats="awayPFStats"
                     court-position='awayPF' />
 
                 <court-position 
@@ -76,6 +88,7 @@
                     position="SG" 
                     :team="awayTeam" 
                     :player="courtPositions.awaySG.value" 
+                    :stats="awaySGStats"
                     court-position='awaySG' />
                 
                 <court-position 
@@ -83,6 +96,7 @@
                     position="SF" 
                     :team="awayTeam" 
                     :player="courtPositions.awaySF.value" 
+                    :stats="awaySFStats"
                     court-position='awaySF' />
                     
                 <court-position 
@@ -90,6 +104,7 @@
                     position="C" 
                     :team="awayTeam" 
                     :player="courtPositions.awayC.value" 
+                    :stats="awayCStats"
                     court-position='awayC' />
 
            </div>
@@ -112,10 +127,20 @@
                 <button class='btn btn-light m-1' @click="updateClock(-12)">Flip</button>
                 <button class='btn btn-light m-1' @click="updateClock(12)">UnFlip</button>
                 <button class='btn btn-light m-1' @click="newPeriod">New Period</button>
+                <button class='btn btn-danger m-1' @click="debug">Debug</button>
             </div>
 
             <div v-if="selectedPosition">
-                <button class='btn btn-light m-1' @click="twoPointMade">2PM</button>
+                <button class='btn btn-light m-1' @click="score(2)">2PM</button>
+                <button class='btn btn-light m-1' @click="missed(2)">2PA</button>                
+
+                <button class='btn btn-light m-1' @click="score(3)">3PM</button>
+                
+                <button class='btn btn-light m-1' @click="score(1)">FTM</button>
+                <button class='btn btn-light m-1' @click="missed(1)">FTA</button>
+                
+                <button class='btn btn-light m-1' @click="personalFoul">PF</button>
+                
             </div>
         </div>
     </div>
@@ -143,7 +168,7 @@ export default {
   },
   setup() { 
     const store = useStore()
-    
+        
     // Get all the information about the game
     const {
         homeTeam, 
@@ -166,15 +191,66 @@ export default {
         store.commit('game/update', gameState);
     }
 
-    const twoPointMade = () => {
+    // Game Actions
+    const score = (points) => {
+        let id = store.state.game[store.state.game.selectedPosition];
+
+        if(id) {
+            const payload = {id}
+            if(points == 3)
+            {
+                payload.attempt3 = 1;
+                payload.made3 = 1;
+            }
+
+            if(points == 2)
+            {
+                payload.attempt2 = 1;
+                payload.made2 = 1;
+            }
+
+            if(points == 1)
+            {
+                payload.FTA = 1;
+                payload.FTM = 1;
+            }
+            
+            store.commit('game/stat', payload)
+        }
+    }
+
+    const missed = (points) => {
+        let id = store.state.game[store.state.game.selectedPosition];
+
+        if(id) {
+            const payload = {id}
+            if(points == 3) payload.attempt3 = 1
+            if(points == 2) payload.attempt2 = 1
+            if(points == 1) payload.FTA = 1
+            store.commit('game/stat', payload)
+        }
+    }
+
+    const personalFoul = () => {
         let id = store.state.game[store.state.game.selectedPosition];
 
         if(id) {
             store.commit('game/stat', {
                 id,
-                points:2
+                fouls:1
             })
         }
+    }
+
+    const debug = () => {
+        let stats = store.state.game.homeStats;
+        let score = 0;
+
+        stats.forEach((player)=>{
+          score += player.points
+        })
+
+        return score
     }
 
     const updateClock = (seconds) => {
@@ -185,19 +261,52 @@ export default {
         store.commit('game/newPeriod')
     }
 
+    const getStats = (position) => {
+        let statSide = null;
+        if(position.includes('home')){
+            statSide = 'homeStats'
+        } else if(position.includes('away')) {
+            statSide = 'awayStats'
+        }
+
+        let stats = store.state.game[statSide].find(s=>s.id==store.state.game[position])
+        if(!stats) return {made3:0, made2:0, FTM:0, fouls:0}
+        return stats
+    }
+
     return {
         // game data
         homeTeam,
         awayTeam,
         courtPositions,
         selectedPosition,
+        
+        // computed
+        homePFStats: computed(() => getStats('homePF')),
+        homePGStats: computed(() => getStats('homePG')),
+        homeSGStats: computed(() => getStats('homeSG')),
+        homeSFStats: computed(() => getStats('homeSF')),
+        homeCStats: computed(() => getStats('homeC')),
 
+        awayPFStats: computed(() => getStats('awayPF')),
+        awayPGStats: computed(() => getStats('awayPG')),
+        awaySGStats: computed(() => getStats('awaySG')),
+        awaySFStats: computed(() => getStats('awaySF')),
+        awayCStats: computed(() => getStats('awayC')),
+        
         // function
         setPosition,
         selectPlayer,
         newPeriod,
         updateClock,
-        twoPointMade
+
+        // game actions
+        score,
+        missed,
+        personalFoul,
+        
+
+        debug
     }
   }
 }

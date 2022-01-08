@@ -38,14 +38,36 @@ export default {
   setup() {  
     const store = useStore()
 
+    const homeScore = computed(() => {
+      let stats = store.state.game.homeStats;
+        let score = 0;
+
+        stats.forEach((player)=>{
+          score += (player.made3 * 3 + player.made2 * 2 + player.FTM)
+        })
+
+        return score
+    })
+
+    const awayScore = computed(() => {
+      let stats = store.state.game.awayStats;
+        let score = 0;
+
+        stats.forEach((player)=>{
+          score += (player.made3 * 3 + player.made2 * 2 + player.FTM)
+        })
+
+        return score
+    })
+
     return {
       period: computed(()=>store.state.game.period),
-      homeScore: computed(()=>store.state.game.homeScore),
       homeFouls: computed(()=>store.state.game.homeFouls),
-      awayScore: computed(()=>store.state.game.awayScore),
       awayFouls: computed(()=>store.state.game.awayFouls),
       possession: computed(()=>store.state.game.possession),
-      clock: computed(()=>store.getters['game/clockDisplay'])
+      clock: computed(()=>store.getters['game/clockDisplay']),
+      homeScore,
+      awayScore
     }
   }
 }
