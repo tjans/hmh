@@ -1,5 +1,6 @@
 <template>
-        <div class="player" :class="[courtPosition, {'selected': isSelected}]" :style="{backgroundColor:team.primaryColor, color: team.textColor, borderColor:team.accentColor}">
+        <div class="player" :class="[courtPosition, {'selected': isSelected}]" 
+            :style="{backgroundColor:team.primaryColor, color: team.textColor, border: '7px solid ' + team.primaryColor}">
             <div v-if="player">
                 <div>
                     [{{position}}] {{player.firstName}} {{player.lastName}}
@@ -41,57 +42,62 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.homePG {
-    top:250px;
-    left:200px;
-}
-
-.homeSF {
-    top:150px;
-    left:200px;
-}
-
-.homeSG {
-    top:350px;
-    left:200px;
-}
-
-.homePF {
-    top:450px;
-    left:200px;
-}
-
-.homeC {
-    top:50px;
-    left:200px;
-}
-
 .awayPG {
-    top:250px;
-    right:195px;
-}
-
-.awaySF {
-    top:150px;
-    right:195px;
+    top:15px;
+    left:131px;
 }
 
 .awaySG {
-    top:350px;
-    right:195px;
+    top:115px;
+    left:131px;
+}
+
+.awaySF {
+    top:215px;
+    left:131px;
 }
 
 .awayPF {
-    top:450px;
-    right:195px;
+    top:315px;
+    left:131px;
 }
 
 .awayC {
-    top:50px;
-    right:195px;
+    top:410px;
+    left:131px;
 }
+
+
+.homePG {
+    top:15px;
+    right:125px;
+}
+
+.homeSG {
+    top:115px;
+    right:125px;
+}
+
+.homeSF {
+    top:215px;
+    right:125px;
+}
+
+.homePF {
+    top:315px;
+    right:125px;
+}
+
+.homeC {
+    top:410px;
+    right:125px;
+}
+
+
+
 .player {
     width:250px !important;
+    border-radius:5px;
 }
 
 .foul-trouble {
@@ -104,7 +110,7 @@ export default {
 } */
 
 .selected {
-    border:7px solid;
+    border:7px solid black !important;
 }
 
 </style>

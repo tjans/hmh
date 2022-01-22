@@ -1,14 +1,14 @@
 <template>
-    <div style="display:flex; align-items: stretch;">
-       <div class="home-container">
-           <div class="team-header" :style="{backgroundColor:homeTeam.primaryColor, color: homeTeam.textColor}">
-              {{homeTeam.city}} {{homeTeam.mascot}}
-           </div>
-
-
-            <table width="100%" class="table table-light table-striped table-hover table-sm">
+  <body class="page-container">
+    <div class="side-container">
+      <div class="box">
+        <div :style="{backgroundColor:awayTeam.primaryColor, color: awayTeam.textColor}" class="team-header">
+         {{ awayTeam.city }}
+        </div>
+        
+        <table width="100%" class="table table-light table-striped table-hover table-sm">
                 
-                <thead class="thead-light">
+                <thead class="thead-dark">
                  <tr>
                      <th style="text-align:left;">Player</th>
                      <th>2P</th>
@@ -22,7 +22,7 @@
                 </thead>
              
                 <tbody>
-                <tr class="roster-player" v-for="player in homeStats" :key="player.id" @click="selectPlayer(player.id)">
+                <tr class="roster-player" v-for="player in awayStats" :key="player.id" @click="selectPlayer(player.id)">
                     <td :class="{'foul-trouble':true}" style="text-align:left;">{{player.lastName}}</td>
                     <td>{{player.made2}}</td>
                     <td>{{player.FTM}}/{{player.FTA}}</td>
@@ -36,59 +36,52 @@
 
              </table>
 
-       </div>
-       
-       <div class="middle-container">
-           <score-section :home-team="homeTeam" :away-team="awayTeam" />
+      </div>
+    </div>
 
-           <div class="court-container">
-               <div class="floor">
-                   <img src="/images/court.png" />
-               </div>                
+    <div class="middle-container">
+      <div class="box">
 
-               <div style='color:white; font-weight:bold; font-size:16pt;'>FISERV FORUM</div>
+        <div class="score-header">
+          <div :style="{backgroundColor:awayTeam.primaryColor, color: awayTeam.textColor}" class="team-header-sm">{{ awayTeam.city }} </div>
+          <div class="play-header"></div>
+          <div :style="{backgroundColor:homeTeam.primaryColor, color: homeTeam.textColor}" class="team-header-sm">{{ homeTeam.city }}</div>
+        </div>
 
-                <court-position 
-                    @click="setPosition('homePG')" 
-                    position="PG" 
-                    :team="homeTeam" 
-                    :player="courtPositions.homePG.value" 
-                    :stats="homePGStats"
-                    court-position='homePG' />
+        <div style="display: flex">
+          <div class="score-column" style="text-align: left">
+            <img src="/images/TOR.PNG" style="width: 100px; height: auto" />
+            <span class="score">{{awayScore}}</span>
+          </div>
+          
+          <div class="clock-container">
+              <div style='font-size:30pt;'>{{ clock }}</div>
+              <div style="font-size:20pt;">{{ period }} </div>
+          </div>
 
-                <court-position 
-                    @click="setPosition('homePF')" 
-                    position="PF" 
-                    :team="homeTeam" 
-                    :player="courtPositions.homePF.value" 
-                    :stats="homePFStats"
-                    court-position='homePF' />
+          <div class="score-column" style="text-align: right">
+            
+            <span class="score">{{homeScore}}</span>
+            <img src="/images/MIL.PNG" style="width: 100px; height: auto" />
+          </div>
+        </div>
 
-                <court-position 
-                    @click="setPosition('homeSG')" 
-                    position="SG" 
-                    :team="homeTeam" 
-                    :player="courtPositions.homeSG.value" 
-                    :stats="homeSGStats"
-                    court-position='homeSG' />
-                
-                <court-position 
-                    @click="setPosition('homeSF')" 
-                    position="SF" 
-                    :team="homeTeam" 
-                    :player="courtPositions.homeSF.value"
-                    :stats="homeSFStats" 
-                    court-position='homeSF' />
+        <div style="display: flex">
+          <div class="score-column" style="text-align: left">
+            Fouls: {{awayFouls}}
+          </div>
+          
+          <div class="clock-container">
+              &nbsp;
+          </div>
 
-                <court-position 
-                    @click="setPosition('homeC')" 
-                    position="C" 
-                    :team="homeTeam" 
-                    :player="courtPositions.homeC.value" 
-                    :stats="homeCStats"
-                    court-position='homeC' />
+          <div class="score-column" style="text-align: right">
+            Fouls: {{ homeFouls }}
+          </div>
+        </div>
 
-                <!-- Away Players -->
+        <div class="court-container">
+          <img src="/images/court.png" />
 
                 <court-position 
                     @click="setPosition('awayPG')" 
@@ -130,17 +123,79 @@
                     :stats="awayCStats"
                     court-position='awayC' />
 
-           </div>
-       </div>
+                <!-- Home team -->
+                <court-position 
+                    @click="setPosition('homePG')" 
+                    position="PG" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homePG.value" 
+                    :stats="homePGStats"
+                    court-position='homePG' />
 
-       <div class="away-container">
-           <div class="team-header" :style="{backgroundColor:awayTeam.primaryColor, color: awayTeam.textColor}">
-              {{awayTeam.city}} {{awayTeam.mascot}}
-           </div>
+                <court-position 
+                    @click="setPosition('homeSG')" 
+                    position="SG" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homeSG.value" 
+                    :stats="homeSGStats"
+                    court-position='homeSG' />
 
-           <table width="100%" class="table table-light table-striped table-hover table-sm">
+                <court-position 
+                    @click="setPosition('homeSF')" 
+                    position="SF" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homeSF.value"
+                    :stats="homeSFStats" 
+                    court-position='homeSF' />
+
+                <court-position 
+                    @click="setPosition('homePF')" 
+                    position="PF" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homePF.value" 
+                    :stats="homePFStats"
+                    court-position='homePF' />
+
+                <court-position 
+                    @click="setPosition('homeC')" 
+                    position="C" 
+                    :team="homeTeam" 
+                    :player="courtPositions.homeC.value" 
+                    :stats="homeCStats"
+                    court-position='homeC' />
+
+        </div>
+
+        <div class="action-buttons flex-container">
+          <button class="flex-stretch" @click="updateClock(-12)">FLIP</button>
+          <button class="flex-stretch" @click="updateClock(12)">UNFLIP</button>
+          <button class="flex-stretch new-period" @click="newPeriod">New Period</button>
+        </div>
+
+        <div class="action-buttons flex-container">
+          <button class="flex-stretch" @click="score(2)">2PM</button>
+          <button class="flex-stretch" @click="score(3)">3PM</button>
+          <button class="flex-stretch" @click="score(1)">FTM</button>
+          <button class="flex-stretch" @click="missed(1)">FTA</button>
+          <button class="flex-stretch" @click="incrementalStat('BLK')">BLK</button>
+          <button class="flex-stretch" @click="incrementalStat('STL')">STL</button>
+          <button class="flex-stretch" @click="incrementalStat('ORB')">ORB</button>
+          <button class="flex-stretch" @click="incrementalStat('DRB')">DRB</button>
+          <button class="flex-stretch" @click="incrementalStat('PF')">PF</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="side-container">
+      <div class="box">
+        <div :style="{backgroundColor:homeTeam.primaryColor, color: homeTeam.textColor}" class="team-header">
+          {{ homeTeam.city }}
+        </div>
+
+        <table width="100%" class="table table-light table-striped table-hover table-sm">
                 
-                <thead class="thead-light">
+                <thead class="thead-dark">
                  <tr>
                      <th style="text-align:left;">Player</th>
                      <th>2P</th>
@@ -154,51 +209,23 @@
                 </thead>
              
                 <tbody>
-                <tr v-for="player in awayStats" :key="player.id" @click="selectPlayer(player.id)">
-                    <td style="text-align:left;">{{player.lastName}}</td>
-                    <td>0</td>
-                    <td>0/0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
+                <tr class="roster-player" v-for="player in homeStats" :key="player.id" @click="selectPlayer(player.id)">
+                    <td :class="{'foul-trouble':true}" style="text-align:left;">{{player.lastName}}</td>
+                    <td>{{player.made2}}</td>
+                    <td>{{player.FTM}}/{{player.FTA}}</td>
+                    <td>{{player.made3}}</td>
+                    <td>{{player.fouls}}</td>
+                    <td>{{player.BLK}}</td>
+                    <td>{{player.STL}}</td>
+                    <td>{{rebounds(player)}}</td>
                 </tr>
                 </tbody>
 
              </table>
-           
-       </div>
+      </div>
     </div>
 
-    <div style="height:200px; background:black; padding:10px">
-        <div style='border:1px solid #1A202C; padding:15px;'>
-            <div>
-                <button class='btn btn-light m-1' @click="updateClock(-12)">Flip</button>
-                <button class='btn btn-light m-1' @click="updateClock(12)">UnFlip</button>
-                <button class='btn btn-light m-1' @click="newPeriod">New Period</button>
-                <button class='btn btn-danger m-1' @click="debug">Debug</button>
-            </div>
-
-            <div v-if="selectedPosition">
-                <button class='btn btn-light m-1' @click="score(2)">2PM</button>
-                <button class='btn btn-light m-1' @click="missed(2)">2PA</button>                
-
-                <button class='btn btn-light m-1' @click="score(3)">3PM</button>
-                
-                <button class='btn btn-light m-1' @click="score(1)">FTM</button>
-                <button class='btn btn-light m-1' @click="missed(1)">FTA</button>
-
-                <button class='btn btn-light m-1' @click="incrementalStat('BLK')">BLK</button>
-                <button class='btn btn-light m-1' @click="incrementalStat('STL')">STL</button>
-                <button class='btn btn-light m-1' @click="incrementalStat('ORB')">ORB</button>
-                <button class='btn btn-light m-1' @click="incrementalStat('DRB')">DRB</button>
-                
-                <button class='btn btn-light m-1' @click="incrementalStat('fouls')">PF</button>
-                
-            </div>
-        </div>
-    </div>
+  </body>
 </template>
 
 
@@ -229,7 +256,11 @@ export default {
         homeTeam, 
         awayTeam,
         selectedPosition,
-        courtPositions
+        courtPositions,
+        clock,
+        homeFouls,
+        awayFouls,
+        period,
     } = useGameData()
 
     const getDefaultPlayer = (player) => {
@@ -377,16 +408,45 @@ export default {
 
     const isFoulTrouble = (player) => {
         return (player.fouls > store.state.game.period)
-      }     
+      }   
+      
+      
+    const homeScore = computed(() => {
+      let stats = store.state.game.homeStats;
+        let score = 0;
+
+        stats.forEach((player)=>{
+          score += (player.made3 * 3 + player.made2 * 2 + player.FTM)
+        })
+
+        return score
+    })
+
+    const awayScore = computed(() => {
+      let stats = store.state.game.awayStats;
+        let score = 0;
+
+        stats.forEach((player)=>{
+          score += (player.made3 * 3 + player.made2 * 2 + player.FTM)
+        })
+
+        return score
+    })
+
 
     return {
         // These two are static for the game, used for team name and colors
         homeTeam, 
         awayTeam,
+        homeScore,
+        awayScore,
+        clock,
+        period,
 
         courtPositions,
         selectedPosition,
-        
+        homeFouls,
+        awayFouls,
         
         // computed
         homeStats: computed(() => store.state.game.homeStats),
@@ -428,54 +488,127 @@ export default {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.foul-trouble {
-    color:red;
+body,
+html {
+  margin: 0px;
+  background: black;
+  color: white;
+  padding: 0px;
+  margin: 0px;
+  font-size: 14pt;
+  font-family: KlavikaWebBoldCond;
 }
 
-.home-container {
-    background:white;
-    flex-grow:1;
+@font-face {
+  font-family:KlavikaWebRegCondensed;
+  src: url(/fonts/KlavikaWebRegCondensed.ttf);
 }
-.away-container {
-    background:white;
-    flex-grow:1;
+
+.page-container {
+  display: flex;
+  min-height: 100vh;
+  margin: 0px;
 }
+
+.side-container {
+  flex-grow: 1;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .middle-container {
-    width:940px;
+  width: 830px;
+}
+
+.box {
+  border: 1px solid #1a202c;
+  height: 99vh;
+}
+
+.score-header {
+  display: flex;
+}
+
+.team-header {
+  padding: 10px;
+  text-transform: uppercase;
+  font-size: 16pt;
+}
+
+.flex-stretch {
+  flex-grow: 1;
+}
+.flex-container {
+  display: flex;
+}
+
+.team-header-sm {
+  flex-grow: 1;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.play-header {
+  width: 500px;
+  font-size:20pt;
+  text-transform: uppercase;
+}
+.crunch-time {
+  color:red;
+}
+
+.score-column {
+ flex-grow: 1;
+ width:300px;
+}
+
+.score {
+  font-weight: 900;
+  font-family: KlavikaWebBoldCond;
+  font-size: 50pt;
+}
+
+@font-face {
+  font-family: bold;
+  src: url(/fonts/bold.woff);
+}
+
+@font-face {
+  font-family: KlavikaWebBoldCond;
+  src: url(/fonts/KlavikaWebBoldCond.woff2);
+}
+
+@font-face {
+  font-family: MediumCond;
+  src: url(/fonts/medium-cond.woff);
+}
+
+.action-buttons button {
+  background: black;
+  color: #838383;
+  border: 1px solid #1a202c;
+  padding: 15px;
+  width: 100px;
+  transition: 0.3s;
+  text-transform: uppercase;
+}
+
+.action-buttons button:hover {
+  color: white;
+}
+
+.action-buttons button.new-period {
+  background-color:#671D1D; 
+}
+.action-buttons button.new-period:hover {
+  background-color:#C53030; color:white;
 }
 
 .court-container {
-    position:relative;
-    align-items: center;
-    justify-content: center;
-    height:560px;
-    background-color:#024813;
+  height: 500px;
+  position: relative;
 }
-.floor {
-    position:absolute;
-    top:30px;
-    left:55px;
-    background-image:url(/images/court.png)
-}
-
-
 
 .player {
     position:absolute;
@@ -484,17 +617,8 @@ export default {
     cursor:pointer;
 }
 
-.roster-player {
-    cursor:pointer;
-}
-.roster-player:hover {
-    background:#CECECE;
+.clock {
+    font-size:26pt;
 }
 
-.team-header {
-    padding:10px 0px 10px 0px;
-    border-bottom:1px solid black;
-    font-weight:bold;
-    font-size:16pt;
-}
 </style>
