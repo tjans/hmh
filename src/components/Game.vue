@@ -5,14 +5,37 @@
               {{homeTeam.city}} {{homeTeam.mascot}}
            </div>
 
-           <div class="roster-player" v-for="player in homeTeam.roster" :key="player.id" @click="selectPlayer(player.id)">
-             {{player.position}} - {{player.firstName}} {{player.lastName}}
-           </div>
 
-           <h1>Stats</h1>
-            <div>
+            <table width="100%" class="table table-light table-striped table-hover table-sm">
                 
-            </div>
+                <thead class="thead-light">
+                 <tr>
+                     <th style="text-align:left;">Player</th>
+                     <th>2P</th>
+                     <th>FT</th>
+                     <th>3P</th>
+                     <th>PF</th>
+                     <th>BLK</th>
+                     <th>STL</th>
+                     <th>REB</th>
+                </tr>
+                </thead>
+             
+                <tbody>
+                <tr class="roster-player" v-for="player in homeStats" :key="player.id" @click="selectPlayer(player.id)">
+                    <td :class="{'foul-trouble':true}" style="text-align:left;">{{player.lastName}}</td>
+                    <td>{{player.made2}}</td>
+                    <td>{{player.FTM}}/{{player.FTA}}</td>
+                    <td>{{player.made3}}</td>
+                    <td>{{player.fouls}}</td>
+                    <td>{{player.BLK}}</td>
+                    <td>{{player.STL}}</td>
+                    <td>{{rebounds(player)}}</td>
+                </tr>
+                </tbody>
+
+             </table>
+
        </div>
        
        <div class="middle-container">
@@ -115,9 +138,36 @@
               {{awayTeam.city}} {{awayTeam.mascot}}
            </div>
 
-           <div class="roster-player" v-for="player in awayTeam.roster" :key="player.id" @click="selectPlayer(player.id)">
-             {{player.position}} - {{player.firstName}} {{player.lastName}}
-           </div>
+           <table width="100%" class="table table-light table-striped table-hover table-sm">
+                
+                <thead class="thead-light">
+                 <tr>
+                     <th style="text-align:left;">Player</th>
+                     <th>2P</th>
+                     <th>FT</th>
+                     <th>3P</th>
+                     <th>PF</th>
+                     <th>BLK</th>
+                     <th>STL</th>
+                     <th>REB</th>
+                </tr>
+                </thead>
+             
+                <tbody>
+                <tr v-for="player in awayStats" :key="player.id" @click="selectPlayer(player.id)">
+                    <td style="text-align:left;">{{player.lastName}}</td>
+                    <td>0</td>
+                    <td>0/0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                </tbody>
+
+             </table>
+           
        </div>
     </div>
 
@@ -138,8 +188,13 @@
                 
                 <button class='btn btn-light m-1' @click="score(1)">FTM</button>
                 <button class='btn btn-light m-1' @click="missed(1)">FTA</button>
+
+                <button class='btn btn-light m-1' @click="incrementalStat('BLK')">BLK</button>
+                <button class='btn btn-light m-1' @click="incrementalStat('STL')">STL</button>
+                <button class='btn btn-light m-1' @click="incrementalStat('ORB')">ORB</button>
+                <button class='btn btn-light m-1' @click="incrementalStat('DRB')">DRB</button>
                 
-                <button class='btn btn-light m-1' @click="personalFoul">PF</button>
+                <button class='btn btn-light m-1' @click="incrementalStat('fouls')">PF</button>
                 
             </div>
         </div>
@@ -177,6 +232,47 @@ export default {
         courtPositions
     } = useGameData()
 
+    const getDefaultPlayer = (player) => {
+        return {
+              id: player.id,
+              firstName: player.firstName,
+              lastName: player.lastName,
+              position: player.position,
+              fouls:0,
+              made2:0,
+              made3:0,
+              attempt2:0,
+              attempt3:0,
+              FTA:0,
+              FTM:0,
+              BLK:0,
+              STL:0,
+              ORB:0,
+              DRB:0
+            }
+    }
+
+    // Initialize the state with the roster and default stats
+    if(!store.state.game.homeStats.length)
+    {
+        let homeRoster = []
+        homeTeam.roster.forEach((item)=> {
+            homeRoster.push(getDefaultPlayer(item))
+        })
+
+        store.commit('game/initHomeStats', homeRoster)
+    }
+
+    if(!store.state.game.awayStats.length)
+    {
+        let awayRoster = []
+        awayTeam.roster.forEach((item)=> {
+            awayRoster.push(getDefaultPlayer(item))
+        })
+
+        store.commit('game/initAwayStats', awayRoster)
+    }
+
     // methods
     const setPosition = (courtPosition) => {
         let gameState = {...store.state.game}
@@ -189,6 +285,11 @@ export default {
         let gameState = {...store.state.game}
         gameState[store.state.game.selectedPosition] = playerId
         store.commit('game/update', gameState);
+    }
+
+    const playerStats = (playerId, statSide) => {
+        let stats = store.state.game[statSide].find(s=>s.id==playerId)
+        return stats;
     }
 
     // Game Actions
@@ -219,6 +320,14 @@ export default {
         }
     }
 
+    const points = (player) => {
+        return player.made2 * 2 + player.made3 * 3 + player.FTM
+    }
+
+    const rebounds = (player) => {
+        return player.ORB + player.DRB
+    }
+
     const missed = (points) => {
         let id = store.state.game[store.state.game.selectedPosition];
 
@@ -231,26 +340,18 @@ export default {
         }
     }
 
-    const personalFoul = () => {
+    const incrementalStat = (statName) => {
         let id = store.state.game[store.state.game.selectedPosition];
 
         if(id) {
-            store.commit('game/stat', {
-                id,
-                fouls:1
-            })
+            const payload = {id}
+            payload[statName] = 1
+            store.commit('game/stat', payload)
         }
     }
 
     const debug = () => {
-        let stats = store.state.game.homeStats;
-        let score = 0;
-
-        stats.forEach((player)=>{
-          score += player.points
-        })
-
-        return score
+       console.log(store.state.game.homePlayers)
     }
 
     const updateClock = (seconds) => {
@@ -274,14 +375,23 @@ export default {
         return stats
     }
 
+    const isFoulTrouble = (player) => {
+        return (player.fouls > store.state.game.period)
+      }     
+
     return {
-        // game data
-        homeTeam,
+        // These two are static for the game, used for team name and colors
+        homeTeam, 
         awayTeam,
+
         courtPositions,
         selectedPosition,
         
+        
         // computed
+        homeStats: computed(() => store.state.game.homeStats),
+        awayStats: computed(() => store.state.game.awayStats),
+
         homePFStats: computed(() => getStats('homePF')),
         homePGStats: computed(() => getStats('homePG')),
         homeSGStats: computed(() => getStats('homeSG')),
@@ -299,13 +409,16 @@ export default {
         selectPlayer,
         newPeriod,
         updateClock,
+        playerStats,
+        points,
+        rebounds,
+        isFoulTrouble,
 
         // game actions
         score,
         missed,
-        personalFoul,
+        incrementalStat,
         
-
         debug
     }
   }
@@ -332,12 +445,16 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.foul-trouble {
+    color:red;
+}
+
 .home-container {
-    background:black;
+    background:white;
     flex-grow:1;
 }
 .away-container {
-    background:black;
+    background:white;
     flex-grow:1;
 }
 .middle-container {
@@ -369,10 +486,6 @@ export default {
 
 .roster-player {
     cursor:pointer;
-    padding:5px 0px 5px 0px;
-    border-bottom:1px solid black;
-    background:white;
-    font-weight:bold;
 }
 .roster-player:hover {
     background:#CECECE;

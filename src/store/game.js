@@ -21,7 +21,7 @@
     awayPF: null,
     awayC: null,
     homeStats: [],
-    awayStats: []
+    awayStats: [],
   }
 
 const game = {
@@ -69,6 +69,14 @@ const game = {
             }
           }
         }
+      },
+
+      initHomeStats (state, newState) {
+        Object.assign(state.homeStats, newState)
+      },
+
+      initAwayStats (state, newState) {
+        Object.assign(state.awayStats, newState)
       },
 
       update (state, newState) {

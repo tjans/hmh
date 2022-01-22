@@ -38,6 +38,29 @@ export default {
   setup() {  
     const store = useStore()
 
+    // need to score team fouls per period
+    // const homeFouls = computed(() => {
+    //   let stats = store.state.game.homeStats;
+    //     let fouls = 0;
+
+    //     stats.forEach((player)=>{
+    //       fouls += (player.fouls)
+    //     })
+
+    //     return fouls
+    // })
+
+    // const awayFouls = computed(() => {
+    //   let stats = store.state.game.homeStats;
+    //     let fouls = 0;
+
+    //     stats.forEach((player)=>{
+    //       fouls += (player.fouls)
+    //     })
+
+    //     return fouls
+    // })
+
     const homeScore = computed(() => {
       let stats = store.state.game.homeStats;
         let score = 0;
