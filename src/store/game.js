@@ -22,6 +22,7 @@
     awayC: null,
     homeStats: [],
     awayStats: [],
+    summary: []
   }
 
 const game = {
@@ -41,6 +42,11 @@ const game = {
           side = 'away'
         }
 
+        if(payload.PF)
+        {
+          state[side + 'Fouls']++;
+        }
+
         if(statSide && payload.id)
         {
           // find the player
@@ -52,8 +58,7 @@ const game = {
               fouls:0,
               made2:0,
               made3:0,
-              attempt2:0,
-              attempt3:0,
+              attempt:0,
               FTA:0,
               FTM:0
             }
@@ -69,6 +74,10 @@ const game = {
             }
           }
         }
+      },
+
+      ADD_SUMMARY(state, payload) {
+        state.summary.push(payload)
       },
 
       initHomeStats (state, newState) {

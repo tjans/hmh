@@ -6,14 +6,14 @@
          {{ awayTeam.city }}
         </div>
         
-        <table width="100%" class="table table-light table-striped table-hover table-sm">
+        <table width="100%" class="table table-light table-striped table-hover table-sm" style="font-size:12pt;">
                 
                 <thead class="thead-dark">
                  <tr>
                      <th style="text-align:left;">Player</th>
                      <th>2P</th>
-                     <th>FT</th>
                      <th>3P</th>
+                     <th>FT</th>
                      <th>PF</th>
                      <th>BLK</th>
                      <th>STL</th>
@@ -22,12 +22,12 @@
                 </thead>
              
                 <tbody>
-                <tr class="roster-player" v-for="player in awayStats" :key="player.id" @click="selectPlayer(player.id)">
+                <tr class="roster-player" style="cursor:pointer;" v-for="player in awayStats" :key="player.id" @click="selectPlayer(player.id)">
                     <td :class="{'foul-trouble':true}" style="text-align:left;">{{player.lastName}}</td>
                     <td>{{player.made2}}</td>
-                    <td>{{player.FTM}}/{{player.FTA}}</td>
                     <td>{{player.made3}}</td>
-                    <td>{{player.fouls}}</td>
+                    <td>{{player.FTM}}/{{player.FTA}}</td>
+                    <td>{{player.PF}}</td>
                     <td>{{player.BLK}}</td>
                     <td>{{player.STL}}</td>
                     <td>{{rebounds(player)}}</td>
@@ -49,25 +49,25 @@
         </div>
 
         <div style="display: flex">
-          <div class="score-column" style="text-align: left">
-            <img src="/images/TOR.PNG" style="width: 100px; height: auto" />
+          <div class="score-column" style="text-align: left;">
+            <img src="/images/TOR.PNG" style="width: 75px; height: auto;" />
             <span class="score">{{awayScore}}</span>
           </div>
           
           <div class="clock-container">
-              <div style='font-size:30pt;'>{{ clock }}</div>
+              <div style='font-size:35pt;'>{{ clock }}</div>
               <div style="font-size:20pt;">{{ period }} </div>
           </div>
 
           <div class="score-column" style="text-align: right">
             
             <span class="score">{{homeScore}}</span>
-            <img src="/images/MIL.PNG" style="width: 100px; height: auto" />
+            <img src="/images/MIL.PNG" style="width: 75px; height: auto" />
           </div>
         </div>
 
         <div style="display: flex">
-          <div class="score-column" style="text-align: left">
+          <div class="score-column" style="text-align: left; padding-left:10px;">
             Fouls: {{awayFouls}}
           </div>
           
@@ -75,7 +75,7 @@
               &nbsp;
           </div>
 
-          <div class="score-column" style="text-align: right">
+          <div class="score-column" style="text-align: right; padding-right:10px;">
             Fouls: {{ homeFouls }}
           </div>
         </div>
@@ -173,6 +173,7 @@
         </div>
 
         <div class="action-buttons flex-container">
+          <button class="flex-stretch" @click="missed(2)">Miss</button>
           <button class="flex-stretch" @click="score(2)">2PM</button>
           <button class="flex-stretch" @click="score(3)">3PM</button>
           <button class="flex-stretch" @click="score(1)">FTM</button>
@@ -184,6 +185,13 @@
           <button class="flex-stretch" @click="incrementalStat('PF')">PF</button>
         </div>
 
+        <div class="text-start">
+            <div v-for="(event, index) in summary" :key="index" 
+                style="border-bottom:1px solid #1A202C; padding:5px 5px 5px 15px; font-family:KlavikaWebRegCondensed">
+                    {{ event.clock }} - {{ event.text }}
+            </div>
+        </div>
+
       </div>
     </div>
 
@@ -193,14 +201,14 @@
           {{ homeTeam.city }}
         </div>
 
-        <table width="100%" class="table table-light table-striped table-hover table-sm">
+        <table width="100%" class="table table-light table-striped table-hover table-sm" style="font-size:12pt;">
                 
                 <thead class="thead-dark">
                  <tr>
                      <th style="text-align:left;">Player</th>
                      <th>2P</th>
-                     <th>FT</th>
                      <th>3P</th>
+                     <th>FT</th>
                      <th>PF</th>
                      <th>BLK</th>
                      <th>STL</th>
@@ -209,12 +217,12 @@
                 </thead>
              
                 <tbody>
-                <tr class="roster-player" v-for="player in homeStats" :key="player.id" @click="selectPlayer(player.id)">
+                <tr class="roster-player" style="cursor:pointer;" v-for="player in homeStats" :key="player.id" @click="selectPlayer(player.id)">
                     <td :class="{'foul-trouble':true}" style="text-align:left;">{{player.lastName}}</td>
                     <td>{{player.made2}}</td>
-                    <td>{{player.FTM}}/{{player.FTA}}</td>
                     <td>{{player.made3}}</td>
-                    <td>{{player.fouls}}</td>
+                    <td>{{player.FTM}}/{{player.FTA}}</td>
+                    <td>{{player.PF}}</td>
                     <td>{{player.BLK}}</td>
                     <td>{{player.STL}}</td>
                     <td>{{rebounds(player)}}</td>
@@ -261,6 +269,7 @@ export default {
         homeFouls,
         awayFouls,
         period,
+        summary
     } = useGameData()
 
     const getDefaultPlayer = (player) => {
@@ -269,11 +278,10 @@ export default {
               firstName: player.firstName,
               lastName: player.lastName,
               position: player.position,
-              fouls:0,
+              PF:0,
               made2:0,
               made3:0,
-              attempt2:0,
-              attempt3:0,
+              attempt:0,
               FTA:0,
               FTM:0,
               BLK:0,
@@ -328,26 +336,39 @@ export default {
         let id = store.state.game[store.state.game.selectedPosition];
 
         if(id) {
+            let text
+
             const payload = {id}
             if(points == 3)
             {
-                payload.attempt3 = 1;
+                payload.attempt = 1;
                 payload.made3 = 1;
+                text = `${id} makes a THREE!`
+                updateClock(-12)
             }
 
             if(points == 2)
             {
-                payload.attempt2 = 1;
+                payload.attempt = 1;
                 payload.made2 = 1;
+                text = `${id} scores a 2pt basket`
+
+                updateClock(-12)
             }
 
             if(points == 1)
             {
                 payload.FTA = 1;
                 payload.FTM = 1;
+                text = `${id} makes a free throw`
             }
             
             store.commit('game/stat', payload)
+
+            store.commit('game/ADD_SUMMARY', {
+                clock: store.getters['game/clockDisplay'],
+                text
+            })
         }
     }
 
@@ -363,11 +384,23 @@ export default {
         let id = store.state.game[store.state.game.selectedPosition];
 
         if(id) {
+            let text
             const payload = {id}
-            if(points == 3) payload.attempt3 = 1
-            if(points == 2) payload.attempt2 = 1
-            if(points == 1) payload.FTA = 1
+            if(points > 1){
+                payload.attempt = 1
+                text = `${id} misses a basket`   
+                updateClock(-12)
+            }
+            if(points == 1) {
+                payload.FTA = 1
+                text = `${id} misses a free throw`   
+            }
             store.commit('game/stat', payload)
+
+            store.commit('game/ADD_SUMMARY', {
+                clock: store.getters['game/clockDisplay'],
+                text
+            })
         }
     }
 
@@ -447,6 +480,7 @@ export default {
         selectedPosition,
         homeFouls,
         awayFouls,
+        summary,
         
         // computed
         homeStats: computed(() => store.state.game.homeStats),
@@ -588,7 +622,7 @@ html {
   background: black;
   color: #838383;
   border: 1px solid #1a202c;
-  padding: 15px;
+  padding: 10px;
   width: 100px;
   transition: 0.3s;
   text-transform: uppercase;

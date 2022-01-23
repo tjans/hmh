@@ -111,6 +111,7 @@ export default {
 
 .selected {
     border:7px solid black !important;
+    transition: border .5s ease;
 }
 
 </style>
