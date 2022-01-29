@@ -1,3 +1,5 @@
+Update game summary to show player name
+
 Settings for college/pro:
     seconds
     periods
@@ -9,14 +11,11 @@ Switching possession
 Calculating fouls by periods
 Foul trouble indicator will change when NCAA, maybe go by segment
 
-Persistent Software
+Persistent Store
 League
 Season
 
-
-
 FAC deck
-Game Summary
 Placing chips
 Game actions into an useActions composable
 Coaching strategy (complacent, energized, etc)

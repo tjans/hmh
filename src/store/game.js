@@ -7,7 +7,7 @@
     homeFouls: 0,
     awayFouls: 0,
     selectedPosition:'homeSF',
-    possession: 'h',
+    possession: 'home',
     homePG: 2,
     homeSG: 3,
     homePF: 1,
@@ -27,33 +27,21 @@ const game = {
   state: () => (defaultState),
     mutations: {
       UNDO(state, payload) {
-        //state = payload.undoState
         Object.assign(state, payload.undoState)
-        //state = {...payload.undoState}
-        //console.log(payload.undoState.homeStats[3].attempt)
       },
-      stat(state, payload) {
-        let statSide = null;
-        let side = null
-
-        if(state.selectedPosition.includes('home')) {
-          statSide = 'homeStats';
-          side = 'home'
-        }
-        else if(state.selectedPosition.includes('away')) {
-          statSide = 'awayStats'
-          side = 'away'
-        }
-
+      stat(state, payload) {        
+        let statsTeam = state[state.possession + 'Stats']
+        let foulsTeam = state[state.possession + 'Fouls']
+        
         if(payload.PF)
         {
-          state[side + 'Fouls']++;
+          foulsTeam++;
         }
 
-        if(statSide && payload.id)
+        if(payload.id)
         {
           // find the player
-          let player = state[statSide].find(p=>p.id == payload.id)
+          let player = statsTeam.find(p=>p.id == payload.id)
 
           if(!player) {
             player = {
@@ -66,7 +54,7 @@ const game = {
               FTM:0
             }
 
-            state[statSide].push(player)
+            statsTeam.push(player)
           }
 
           for (const property in payload) {

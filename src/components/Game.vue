@@ -188,7 +188,7 @@
         <div class="text-start">
             <div v-for="(event, index) in summary" :key="index" 
                 style="border-bottom:1px solid #1A202C; padding:5px 5px 5px 15px; font-family:KlavikaWebRegCondensed">
-                    {{ event.clock }} - {{ event.text }}
+                    Period {{ event.period }} - {{ event.clock }} - {{ event.text }}
             </div>
         </div>
 
@@ -273,6 +273,11 @@ export default {
         summary
     } = useGameData()
 
+    const shortName = (player) =>
+    {
+        return `${player.firstName.substring(0,1)}. ${player.lastName}`
+    }
+
     const getDefaultPlayer = (player) => {
         return {
               id: player.id,
@@ -326,6 +331,7 @@ export default {
 
     const setPosition = (courtPosition) => {
         let gameState = {...store.state.game}
+        gameState.possession = courtPosition.includes('away') ? 'away' : 'home'
         gameState.selectedPosition = courtPosition
         store.commit('game/update', gameState);
     }
@@ -345,18 +351,19 @@ export default {
     // Game Actions
     const score = (points) => {
         let id = store.state.game[store.state.game.selectedPosition];
+        let team = store.state.game[store.state.game.possession + 'Stats']
+        let player = team.find(p=>p.id == id)
         
-        if(id) {
+        if(player) {
             let text
             const undoState = clone(store.state.game)
-            
-            
+                        
             const payload = {id}
             if(points == 3)
             {
                 payload.attempt = 1;
                 payload.made3 = 1;
-                text = `${id} makes a THREE!`
+                text = `${shortName(player)} makes a THREE!`
                 updateClock(-12)
             }
 
@@ -364,7 +371,7 @@ export default {
             {
                 payload.attempt = 1;
                 payload.made2 = 1;
-                text = `${id} scores a 2pt basket`
+                text = `${shortName(player)} scores a 2pt basket`
 
                 updateClock(-12)
             }
@@ -373,11 +380,12 @@ export default {
             {
                 payload.FTA = 1;
                 payload.FTM = 1;
-                text = `${id} makes a free throw`
+                text = `${shortName(player)} makes a free throw`
             }
 
             store.commit('summary/ADD_LOG', {
                 clock: store.getters['game/clockDisplay'],
+                period: store.state.game.period,
                 undoState,
                 text
             })
@@ -396,23 +404,26 @@ export default {
 
     const missed = (points) => {
         let id = store.state.game[store.state.game.selectedPosition];
+        let team = store.state.game[store.state.game.possession + 'Stats']
+        let player = team.find(p=>p.id == id)
 
         if(id) {
             let text
             const payload = {id}
             if(points > 1){
                 payload.attempt = 1
-                text = `${id} misses a basket`   
+                text = `${shortName(player)} misses a basket`   
                 updateClock(-12)
             }
             if(points == 1) {
                 payload.FTA = 1
-                text = `${id} misses a free throw`   
+                text = `${shortName(player)} misses a free throw`   
             }
             store.commit('game/stat', payload)
 
             store.commit('summary/ADD_LOG', {
                 clock: store.getters['game/clockDisplay'],
+                period: store.state.game.period,
                 text
             })
         }
@@ -521,6 +532,7 @@ export default {
         points,
         rebounds,
         isFoulTrouble,
+        shortName,
 
         // game actions
         score,
