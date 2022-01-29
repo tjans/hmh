@@ -21,7 +21,7 @@ export default function useGameData()
       possession: computed(()=>store.state.game.possession),
       clock: computed(()=>store.getters['game/clockDisplay']),
       selectedPosition: computed(()=>store.state.game.selectedPosition),
-      summary: computed(()=>store.state.game.summary.slice(Math.max(store.state.game.summary.length - 3, 0)).reverse() ),
+      summary: computed(()=>store.state.summary.log.slice(Math.max(store.state.summary.log.length - 3, 0)).reverse() ),
       courtPositions: {
         homePG: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePG)),
         homePF: computed(() => homeTeam.roster.find(player=>player.id == store.state.game.homePF)),

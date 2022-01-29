@@ -168,7 +168,7 @@
 
         <div class="action-buttons flex-container">
           <button class="flex-stretch" @click="updateClock(-12)">FLIP</button>
-          <button class="flex-stretch" @click="updateClock(12)">UNFLIP</button>
+          <button class="flex-stretch" @click="undo()">UNFLIP</button>
           <button class="flex-stretch new-period" @click="newPeriod">New Period</button>
         </div>
 
@@ -247,6 +247,7 @@ import useGameData from '@/composables/useGameData'
 import { useStore, mapState } from 'vuex'
 import {computed, toRefs} from 'vue'
 import Debug from './Debug.vue';
+import clone from 'just-clone';
 
 export default {
   name: 'Game',
@@ -313,6 +314,16 @@ export default {
     }
 
     // methods
+    const undo = () => {
+        let logLength = store.state.summary.log.length
+        if(logLength > 0)
+        {
+            const latestLog = store.state.summary.log[logLength-1]
+            store.commit('summary/UNDO')
+            store.commit('game/UNDO', latestLog);
+        }
+    }
+
     const setPosition = (courtPosition) => {
         let gameState = {...store.state.game}
         gameState.selectedPosition = courtPosition
@@ -334,10 +345,12 @@ export default {
     // Game Actions
     const score = (points) => {
         let id = store.state.game[store.state.game.selectedPosition];
-
+        
         if(id) {
             let text
-
+            const undoState = clone(store.state.game)
+            
+            
             const payload = {id}
             if(points == 3)
             {
@@ -362,13 +375,14 @@ export default {
                 payload.FTM = 1;
                 text = `${id} makes a free throw`
             }
-            
-            store.commit('game/stat', payload)
 
-            store.commit('game/ADD_SUMMARY', {
+            store.commit('summary/ADD_LOG', {
                 clock: store.getters['game/clockDisplay'],
+                undoState,
                 text
             })
+            
+            store.commit('game/stat', payload)
         }
     }
 
@@ -397,7 +411,7 @@ export default {
             }
             store.commit('game/stat', payload)
 
-            store.commit('game/ADD_SUMMARY', {
+            store.commit('summary/ADD_LOG', {
                 clock: store.getters['game/clockDisplay'],
                 text
             })
@@ -512,6 +526,7 @@ export default {
         score,
         missed,
         incrementalStat,
+        undo,
         
         debug
     }

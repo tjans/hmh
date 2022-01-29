@@ -1,14 +1,12 @@
-  // setup defaults, this is temporary as we'll have this created before we get here next time
+// setup defaults, this is temporary as we'll have this created before we get here next time
   const defaultState = {
     homeTeamId: 1,
     awayTeamId: 2,
     period: 1,
     seconds: 720,
-    homeScore: 0,
-    awayScore: 0,
     homeFouls: 0,
     awayFouls: 0,
-    selectedPosition:null,
+    selectedPosition:'homeSF',
     possession: 'h',
     homePG: 2,
     homeSG: 3,
@@ -21,14 +19,19 @@
     awayPF: null,
     awayC: null,
     homeStats: [],
-    awayStats: [],
-    summary: []
+    awayStats: []
   }
 
 const game = {
   namespaced: true,
   state: () => (defaultState),
     mutations: {
+      UNDO(state, payload) {
+        //state = payload.undoState
+        Object.assign(state, payload.undoState)
+        //state = {...payload.undoState}
+        //console.log(payload.undoState.homeStats[3].attempt)
+      },
       stat(state, payload) {
         let statSide = null;
         let side = null
@@ -74,10 +77,6 @@ const game = {
             }
           }
         }
-      },
-
-      ADD_SUMMARY(state, payload) {
-        state.summary.push(payload)
       },
 
       initHomeStats (state, newState) {
