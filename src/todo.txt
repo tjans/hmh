@@ -1,4 +1,5 @@
-Update game summary to show player name
+Make player turn red when in foul trouble
+Fouls by period?
 
 Settings for college/pro:
     seconds

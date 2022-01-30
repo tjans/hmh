@@ -33,9 +33,11 @@ const game = {
         let statsTeam = state[state.possession + 'Stats']
         let foulsTeam = state[state.possession + 'Fouls']
         
+        console.log(payload)
+
         if(payload.PF)
         {
-          foulsTeam++;
+          state[state.possession + 'Fouls']++
         }
 
         if(payload.id)

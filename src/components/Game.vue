@@ -2,40 +2,7 @@
   <body class="page-container">
     <div class="side-container">
       <div class="box">
-        <div :style="{backgroundColor:awayTeam.primaryColor, color: awayTeam.textColor}" class="team-header">
-         {{ awayTeam.city }}
-        </div>
-        
-        <table width="100%" class="table table-light table-striped table-hover table-sm" style="font-size:12pt;">
-                
-                <thead class="thead-dark">
-                 <tr>
-                     <th style="text-align:left;">Player</th>
-                     <th>2P</th>
-                     <th>3P</th>
-                     <th>FT</th>
-                     <th>PF</th>
-                     <th>BLK</th>
-                     <th>STL</th>
-                     <th>REB</th>
-                </tr>
-                </thead>
-             
-                <tbody>
-                <tr class="roster-player" style="cursor:pointer;" v-for="player in awayStats" :key="player.id" @click="selectPlayer(player.id)">
-                    <td :class="{'foul-trouble':true}" style="text-align:left;">{{player.lastName}}</td>
-                    <td>{{player.made2}}</td>
-                    <td>{{player.made3}}</td>
-                    <td>{{player.FTM}}/{{player.FTA}}</td>
-                    <td>{{player.PF}}</td>
-                    <td>{{player.BLK}}</td>
-                    <td>{{player.STL}}</td>
-                    <td>{{rebounds(player)}}</td>
-                </tr>
-                </tbody>
-
-             </table>
-
+        <game-stats :team="awayTeam" :stats="awayStats" />
       </div>
     </div>
 
@@ -197,39 +164,7 @@
 
     <div class="side-container">
       <div class="box">
-        <div :style="{backgroundColor:homeTeam.primaryColor, color: homeTeam.textColor}" class="team-header">
-          {{ homeTeam.city }}
-        </div>
-
-        <table width="100%" class="table table-light table-striped table-hover table-sm" style="font-size:12pt;">
-                
-                <thead class="thead-dark">
-                 <tr>
-                     <th style="text-align:left;">Player</th>
-                     <th>2P</th>
-                     <th>3P</th>
-                     <th>FT</th>
-                     <th>PF</th>
-                     <th>BLK</th>
-                     <th>STL</th>
-                     <th>REB</th>
-                </tr>
-                </thead>
-             
-                <tbody>
-                <tr class="roster-player" style="cursor:pointer;" v-for="player in homeStats" :key="player.id" @click="selectPlayer(player.id)">
-                    <td :class="{'foul-trouble':true}" style="text-align:left;">{{player.lastName}}</td>
-                    <td>{{player.made2}}</td>
-                    <td>{{player.made3}}</td>
-                    <td>{{player.FTM}}/{{player.FTA}}</td>
-                    <td>{{player.PF}}</td>
-                    <td>{{player.BLK}}</td>
-                    <td>{{player.STL}}</td>
-                    <td>{{rebounds(player)}}</td>
-                </tr>
-                </tbody>
-
-             </table>
+        <game-stats :team="homeTeam" :stats="homeStats" />
       </div>
     </div>
 
@@ -243,6 +178,7 @@
 **************************************************/
 import ScoreSection from './ScoreSection.vue';
 import CourtPosition from './CourtPosition.vue';
+import GameStats from './GameStats.vue';
 import useGameData from '@/composables/useGameData'
 import { useStore, mapState } from 'vuex'
 import {computed, toRefs} from 'vue'
@@ -255,6 +191,7 @@ export default {
   components: {
     ScoreSection,
     CourtPosition,
+    GameStats,
     Debug
   },
   setup() { 
@@ -351,8 +288,7 @@ export default {
     // Game Actions
     const score = (points) => {
         let id = store.state.game[store.state.game.selectedPosition];
-        let team = store.state.game[store.state.game.possession + 'Stats']
-        let player = team.find(p=>p.id == id)
+        let player = getPlayer(id)
         
         if(player) {
             let text
@@ -404,8 +340,8 @@ export default {
 
     const missed = (points) => {
         let id = store.state.game[store.state.game.selectedPosition];
-        let team = store.state.game[store.state.game.possession + 'Stats']
-        let player = team.find(p=>p.id == id)
+        let player = getPlayer(id)
+        const undoState = clone(store.state.game)
 
         if(id) {
             let text
@@ -424,18 +360,35 @@ export default {
             store.commit('summary/ADD_LOG', {
                 clock: store.getters['game/clockDisplay'],
                 period: store.state.game.period,
+                undoState,
                 text
             })
         }
     }
 
+    const getPlayer = (id) => {
+        let team = store.state.game[store.state.game.possession + 'Stats']
+        let player = team.find(p=>p.id == id)
+        return player
+    }
+
     const incrementalStat = (statName) => {
         let id = store.state.game[store.state.game.selectedPosition];
+        let player = getPlayer(id)
+        const undoState = clone(store.state.game)
 
         if(id) {
+            let text = `${statName} by ${shortName(player)}`
             const payload = {id}
             payload[statName] = 1
             store.commit('game/stat', payload)
+
+            store.commit('summary/ADD_LOG', {
+                clock: store.getters['game/clockDisplay'],
+                period: store.state.game.period,
+                undoState,
+                text
+            })
         }
     }
 
