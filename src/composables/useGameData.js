@@ -12,9 +12,33 @@ export default function useGameData()
     const homeTeam = teams.find(team=>team.id == store.state.game.homeTeamId)
     const awayTeam = teams.find(team=>team.id == store.state.game.awayTeamId)
 
+    const homeScore = computed(() => {
+      let stats = store.state.game.homeStats;
+        let score = 0;
+
+        stats.forEach((player)=>{
+          score += (player.made3 * 3 + player.made2 * 2 + player.FTM)
+        })
+
+        return score
+    })
+
+    const awayScore = computed(() => {
+      let stats = store.state.game.awayStats;
+        let score = 0;
+
+        stats.forEach((player)=>{
+          score += (player.made3 * 3 + player.made2 * 2 + player.FTM)
+        })
+
+        return score
+    })
+
     return {
       homeTeam,
+      homeScore,
       awayTeam,
+      awayScore,
       period: computed(()=>store.state.game.period),
       homeFouls: computed(()=>store.state.game.homeFouls),
       awayFouls: computed(()=>store.state.game.awayFouls),

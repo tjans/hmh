@@ -9,46 +9,10 @@
     <div class="middle-container">
       <div class="box">
 
-        <div class="score-header">
-          <div :style="{backgroundColor:awayTeam.primaryColor, color: awayTeam.textColor}" class="team-header-sm">{{ awayTeam.city }} </div>
-          <div class="play-header"></div>
-          <div :style="{backgroundColor:homeTeam.primaryColor, color: homeTeam.textColor}" class="team-header-sm">{{ homeTeam.city }}</div>
-        </div>
-
-        <div style="display: flex">
-          <div class="score-column" style="text-align: left;">
-            <img src="/images/TOR.PNG" style="width: 75px; height: auto;" />
-            <span class="score">{{awayScore}}</span>
-          </div>
-          
-          <div class="clock-container">
-              <div style='font-size:35pt;'>{{ clock }}</div>
-              <div style="font-size:20pt;">{{ period }} </div>
-          </div>
-
-          <div class="score-column" style="text-align: right">
-            
-            <span class="score">{{homeScore}}</span>
-            <img src="/images/MIL.PNG" style="width: 75px; height: auto" />
-          </div>
-        </div>
-
-        <div style="display: flex">
-          <div class="score-column" style="text-align: left; padding-left:10px;">
-            Fouls: {{awayFouls}}
-          </div>
-          
-          <div class="clock-container">
-              &nbsp;
-          </div>
-
-          <div class="score-column" style="text-align: right; padding-right:10px;">
-            Fouls: {{ homeFouls }}
-          </div>
-        </div>
+        <score-board />
 
         <div class="court-container">
-          <img src="/images/court.png" />
+          <img src="/images/court2.jpg" />
 
                 <court-position 
                     @click="setPosition('awayPG')" 
@@ -134,7 +98,7 @@
         </div>
 
         <div class="action-buttons flex-container">
-          <button class="flex-stretch" @click="updateClock(-12)">FLIP</button>
+          <button class="flex-stretch" @click="reset()">Reset</button>
           <button class="flex-stretch" @click="undo()">UNFLIP</button>
           <button class="flex-stretch new-period" @click="newPeriod">New Period</button>
         </div>
@@ -184,6 +148,7 @@ import { useStore, mapState } from 'vuex'
 import {computed, toRefs} from 'vue'
 import Debug from './Debug.vue';
 import clone from 'just-clone';
+import ScoreBoard from './ScoreBoard.vue';
 
 export default {
   name: 'Game',
@@ -192,11 +157,18 @@ export default {
     ScoreSection,
     CourtPosition,
     GameStats,
-    Debug
+    Debug,
+    ScoreBoard
   },
   setup() { 
     const store = useStore()
         
+    document.onkeydown = (e) => {
+      console.log(e.key)
+      if(e.key === 'ArrowDown') updateClock(-12)
+      if(e.key === 'ArrowUp') updateClock(12)
+    }
+    
     // Get all the information about the game
     const {
         homeTeam, 
@@ -207,12 +179,16 @@ export default {
         homeFouls,
         awayFouls,
         period,
-        summary
+        summary,
     } = useGameData()
 
     const shortName = (player) =>
     {
         return `${player.firstName.substring(0,1)}. ${player.lastName}`
+    }
+
+    const reset = () => {
+      store.commit('game/RESET')
     }
 
     const getDefaultPlayer = (player) => {
@@ -273,13 +249,6 @@ export default {
         store.commit('game/update', gameState);
     }
 
-    const selectPlayer = (playerId) => {
-        //alert(`Setting ${store.state.game.selectedPosition} to ${playerId}`);
-        let gameState = {...store.state.game}
-        gameState[store.state.game.selectedPosition] = playerId
-        store.commit('game/update', gameState);
-    }
-
     const playerStats = (playerId, statSide) => {
         let stats = store.state.game[statSide].find(s=>s.id==playerId)
         return stats;
@@ -300,7 +269,7 @@ export default {
                 payload.attempt = 1;
                 payload.made3 = 1;
                 text = `${shortName(player)} makes a THREE!`
-                updateClock(-12)
+                //updateClock(-12)
             }
 
             if(points == 2)
@@ -309,7 +278,7 @@ export default {
                 payload.made2 = 1;
                 text = `${shortName(player)} scores a 2pt basket`
 
-                updateClock(-12)
+                //updateClock(-12)
             }
 
             if(points == 1)
@@ -349,7 +318,7 @@ export default {
             if(points > 1){
                 payload.attempt = 1
                 text = `${shortName(player)} misses a basket`   
-                updateClock(-12)
+                //updateClock(-12)
             }
             if(points == 1) {
                 payload.FTA = 1
@@ -419,38 +388,12 @@ export default {
 
     const isFoulTrouble = (player) => {
         return (player.fouls > store.state.game.period)
-      }   
-      
-      
-    const homeScore = computed(() => {
-      let stats = store.state.game.homeStats;
-        let score = 0;
-
-        stats.forEach((player)=>{
-          score += (player.made3 * 3 + player.made2 * 2 + player.FTM)
-        })
-
-        return score
-    })
-
-    const awayScore = computed(() => {
-      let stats = store.state.game.awayStats;
-        let score = 0;
-
-        stats.forEach((player)=>{
-          score += (player.made3 * 3 + player.made2 * 2 + player.FTM)
-        })
-
-        return score
-    })
-
+      }  
 
     return {
         // These two are static for the game, used for team name and colors
         homeTeam, 
         awayTeam,
-        homeScore,
-        awayScore,
         clock,
         period,
 
@@ -478,7 +421,6 @@ export default {
         
         // function
         setPosition,
-        selectPlayer,
         newPeriod,
         updateClock,
         playerStats,
@@ -486,6 +428,7 @@ export default {
         rebounds,
         isFoulTrouble,
         shortName,
+        reset,
 
         // game actions
         score,
@@ -540,64 +483,6 @@ html {
   height: 99vh;
 }
 
-.score-header {
-  display: flex;
-}
-
-.team-header {
-  padding: 10px;
-  text-transform: uppercase;
-  font-size: 16pt;
-}
-
-.flex-stretch {
-  flex-grow: 1;
-}
-.flex-container {
-  display: flex;
-}
-
-.team-header-sm {
-  flex-grow: 1;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.play-header {
-  width: 500px;
-  font-size:20pt;
-  text-transform: uppercase;
-}
-.crunch-time {
-  color:red;
-}
-
-.score-column {
- flex-grow: 1;
- width:300px;
-}
-
-.score {
-  font-weight: 900;
-  font-family: KlavikaWebBoldCond;
-  font-size: 50pt;
-}
-
-@font-face {
-  font-family: bold;
-  src: url(/fonts/bold.woff);
-}
-
-@font-face {
-  font-family: KlavikaWebBoldCond;
-  src: url(/fonts/KlavikaWebBoldCond.woff2);
-}
-
-@font-face {
-  font-family: MediumCond;
-  src: url(/fonts/medium-cond.woff);
-}
-
 .action-buttons button {
   background: black;
   color: #838383;
@@ -631,8 +516,6 @@ html {
     cursor:pointer;
 }
 
-.clock {
-    font-size:26pt;
-}
+
 
 </style>

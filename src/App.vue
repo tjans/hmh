@@ -15,6 +15,13 @@
   color: #2c3e50;
 }
 
+.flex-stretch {
+  flex-grow: 1;
+}
+.flex-container {
+  display: flex;
+}
+
 #nav {
   padding: 30px;
 }
@@ -26,5 +33,20 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+@font-face {
+  font-family: bold;
+  src: url(/fonts/bold.woff);
+}
+
+@font-face {
+  font-family: KlavikaWebBoldCond;
+  src: url(/fonts/KlavikaWebBoldCond.woff2);
+}
+
+@font-face {
+  font-family: MediumCond;
+  src: url(/fonts/medium-cond.woff);
 }
 </style>

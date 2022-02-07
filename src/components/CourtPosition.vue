@@ -3,12 +3,13 @@
             :style="{backgroundColor:team.primaryColor, color: team.textColor, border: '7px solid ' + team.primaryColor}">
             <div v-if="player">
                 <div>
-                    [{{position}}] {{player.firstName}} {{player.lastName}}
+                    {{player.firstName.substring(0,1)}}. {{player.lastName}}
                 </div>
-                <div :class="{'foul-trouble':isFoulTrouble()}">Fouls: {{(stats.fouls ? stats.fouls : 0)}}, Points: {{points()}}</div>
+                <div :class="{'foul-trouble':isFoulTrouble()}">Fouls: {{(stats.PF ? stats.PF : 0)}}, Points: {{points()}}</div>
             </div>
             <div v-else>
-                {{position}} - No player
+                No player
+                <div>&nbsp;</div>
             </div>
         </div>
 </template>
@@ -43,61 +44,62 @@ export default {
 <style scoped>
 
 .awayPG {
-    top:15px;
-    left:131px;
+    top:50px;
+    left:185px;
 }
 
 .awaySG {
-    top:115px;
-    left:131px;
+    top:132px;
+    left:185px;
 }
 
 .awaySF {
-    top:215px;
-    left:131px;
+    top:213px;
+    left:185px;
 }
 
 .awayPF {
-    top:315px;
-    left:131px;
+    top:296px;
+    left:185px;
 }
 
 .awayC {
-    top:410px;
-    left:131px;
+    top:378px;
+    left:185px;
 }
 
 
 .homePG {
-    top:15px;
-    right:125px;
+    top:50px;
+    right:185px;
 }
 
 .homeSG {
-    top:115px;
-    right:125px;
+    top:132px;
+    right:185px;
 }
 
 .homeSF {
-    top:215px;
-    right:125px;
+    top:213px;
+    right:185px;
 }
 
 .homePF {
-    top:315px;
-    right:125px;
+    top:296px;
+    right:185px;
 }
 
 .homeC {
-    top:410px;
-    right:125px;
+    top:378px;
+    right:185px;
 }
 
 
 
 .player {
-    width:250px !important;
+    width:175px !important;
     border-radius:5px;
+    padding:0px !important;
 }
 
 .foul-trouble {

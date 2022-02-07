@@ -1,9 +1,7 @@
-//import { ref } from "vue"
-import { useStore } from 'vuex'
-
 // Accept store and automatically use name of store as storename.json
 export default function usePersistentStore() {
-  const remote = require('electron').remote;
+  //const remote = require('electron').remote;
+  const remote = require('@electron/remote')
   const app = remote.app;
   const appPath = app.getPath('userData') + '/data/'
   var fs = require("fs");

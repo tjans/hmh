@@ -13,6 +13,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@electron/remote": "^2.0.4",
     "bootstrap": "^5.1.3",
     "core-js": "^3.6.5",
     "just-clone": "^5.0.1",

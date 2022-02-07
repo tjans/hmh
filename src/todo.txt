@@ -1,18 +1,15 @@
-Make player turn red when in foul trouble
-Fouls by period?
+Persistent Store
+Final minute
+Other settings?
 
 Settings for college/pro:
     seconds
     periods
     displaying clock/OT, max checks
+    Foul trouble indicator will change when NCAA, maybe go by segment
 
 Game Type (NCAA/NBA)
 
-Switching possession
-Calculating fouls by periods
-Foul trouble indicator will change when NCAA, maybe go by segment
-
-Persistent Store
 League
 Season
 

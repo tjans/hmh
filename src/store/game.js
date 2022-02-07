@@ -1,5 +1,12 @@
-// setup defaults, this is temporary as we'll have this created before we get here next time
-  const defaultState = {
+import usePersistentStore from '@/composables/usePersistentStore'
+import { objectToString } from '@vue/shared';
+
+const pStore = usePersistentStore()
+let defaultState = pStore.load('game')
+
+if(!defaultState)
+{
+  defaultState = {
     homeTeamId: 1,
     awayTeamId: 2,
     period: 1,
@@ -8,12 +15,12 @@
     awayFouls: 0,
     selectedPosition:'homeSF',
     possession: 'home',
-    homePG: 2,
-    homeSG: 3,
-    homePF: 1,
-    homeSF: 4,
-    homeC: 5,
-    awayPG: 7,
+    homePG: null,
+    homeSG: null,
+    homePF: null,
+    homeSF: null,
+    homeC: null,
+    awayPG: null,
     awaySG: null,
     awaySF: null,
     awayPF: null,
@@ -21,6 +28,7 @@
     homeStats: [],
     awayStats: []
   }
+}
 
 const game = {
   namespaced: true,
@@ -28,12 +36,10 @@ const game = {
     mutations: {
       UNDO(state, payload) {
         Object.assign(state, payload.undoState)
+        pStore.save('game', state)
       },
       stat(state, payload) {        
         let statsTeam = state[state.possession + 'Stats']
-        let foulsTeam = state[state.possession + 'Fouls']
-        
-        console.log(payload)
 
         if(payload.PF)
         {
@@ -67,19 +73,23 @@ const game = {
             }
           }
         }
+
+        pStore.save('game', state)
       },
 
       initHomeStats (state, newState) {
         Object.assign(state.homeStats, newState)
+        pStore.save('game', state)
       },
 
       initAwayStats (state, newState) {
         Object.assign(state.awayStats, newState)
+        pStore.save('game', state)
       },
 
       update (state, newState) {
         Object.assign(state, newState)
-        //persistentStore.save('game',newState)
+        pStore.save('game', state)
       },
 
       tick(state, seconds) {
@@ -97,7 +107,7 @@ const game = {
           state.seconds = newSeconds;
         }
 
-        //persistentStore.save('game', state)
+        pStore.save('game', state)
       },
 
       newPeriod(state) {
@@ -110,7 +120,7 @@ const game = {
         if(period > 4) period = 1;
         state.period = period;
 
-        //persistentStore.save('game', state)
+        pStore.save('game', state)
       }
     },
 
