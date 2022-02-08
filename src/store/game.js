@@ -65,8 +65,10 @@ const game = {
             statsTeam.push(player)
           }
 
+          if(payload.rightNow) player.rightNow = payload.rightNow
+
           for (const property in payload) {
-            if(property != "id") {
+            if(property != "id" && property != "rightNow") {
               if(property in player) {
                 player[property]+=payload[property]
               }

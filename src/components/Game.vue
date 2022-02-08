@@ -206,7 +206,8 @@ export default {
               BLK:0,
               STL:0,
               ORB:0,
-              DRB:0
+              DRB:0,
+              rightNow: null
             }
     }
 
@@ -268,6 +269,7 @@ export default {
             {
                 payload.attempt = 1;
                 payload.made3 = 1;
+                payload.rightNow = "made";
                 text = `${shortName(player)} makes a THREE!`
                 //updateClock(-12)
             }
@@ -276,6 +278,7 @@ export default {
             {
                 payload.attempt = 1;
                 payload.made2 = 1;
+                payload.rightNow = "made";
                 text = `${shortName(player)} scores a 2pt basket`
 
                 //updateClock(-12)
@@ -317,6 +320,7 @@ export default {
             const payload = {id}
             if(points > 1){
                 payload.attempt = 1
+                payload.rightNow = "miss"
                 text = `${shortName(player)} misses a basket`   
                 //updateClock(-12)
             }

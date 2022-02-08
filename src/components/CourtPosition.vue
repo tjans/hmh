@@ -5,7 +5,9 @@
                 <div>
                     {{player.firstName.substring(0,1)}}. {{player.lastName}}
                 </div>
-                <div :class="{'foul-trouble':isFoulTrouble()}">Fouls: {{(stats.PF ? stats.PF : 0)}}, Points: {{points()}}</div>
+                <div :class="{'foul-trouble':isFoulTrouble()}">
+                    Fouls: {{(stats.PF ? stats.PF : 0)}}, Points: {{points()}}<span v-if="rightNow()">, Last: {{rightNow()}}</span>
+                </div>
             </div>
             <div v-else>
                 No player
@@ -27,6 +29,10 @@ export default {
       const isFoulTrouble = () => {
         return (props.stats.fouls > store.state.game.period)
       }     
+      const rightNow = () =>  {
+        return props.stats.rightNow
+      }
+
       const points = () => {
           return props.stats.made3 * 3 + props.stats.made2 * 2 + props.stats.FTM
       }
@@ -34,7 +40,8 @@ export default {
       return {
           isFoulTrouble: computed(() => isFoulTrouble),
           isSelected: computed(()=>store.state.game.selectedPosition == props.courtPosition),
-          points: computed(() => points)
+          points: computed(() => points),
+          rightNow: computed(() => rightNow)
       }
   }
 }
@@ -45,59 +52,59 @@ export default {
 
 .awayPG {
     top:50px;
-    left:185px;
+    left:110px;
 }
 
 .awaySG {
     top:132px;
-    left:185px;
+    left:110px;
 }
 
 .awaySF {
     top:213px;
-    left:185px;
+    left:110px;
 }
 
 .awayPF {
     top:296px;
-    left:185px;
+    left:110px;
 }
 
 .awayC {
     top:378px;
-    left:185px;
+    left:110px;
 }
 
 
 .homePG {
     top:50px;
-    right:185px;
+    right:115px;
 }
 
 .homeSG {
     top:132px;
-    right:185px;
+    right:115px;
 }
 
 .homeSF {
     top:213px;
-    right:185px;
+    right:115px;
 }
 
 .homePF {
     top:296px;
-    right:185px;
+    right:115px;
 }
 
 .homeC {
     top:378px;
-    right:185px;
+    right:115px;
 }
 
 
 
 .player {
-    width:175px !important;
+    width:250px !important;
     border-radius:5px;
     padding:0px !important;
 }
