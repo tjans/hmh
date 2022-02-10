@@ -113,7 +113,8 @@
           <button class="flex-stretch" @click="incrementalStat('STL')">STL</button>
           <button class="flex-stretch" @click="incrementalStat('ORB')">ORB</button>
           <button class="flex-stretch" @click="incrementalStat('DRB')">DRB</button>
-          <button class="flex-stretch" @click="incrementalStat('PF')">PF</button>
+          <button class="flex-stretch" @click="incrementalStat('PF')">D. Foul</button>
+          <button class="flex-stretch" @click="incrementalStat('OF')">O. Foul</button>
         </div>
 
         <div class="text-start">
@@ -198,6 +199,7 @@ export default {
               lastName: player.lastName,
               position: player.position,
               PF:0,
+              OF:0,
               made2:0,
               made3:0,
               attempt:0,
@@ -386,13 +388,10 @@ export default {
         }
 
         let stats = store.state.game[statSide].find(s=>s.id==store.state.game[position])
+
         if(!stats) return {made3:0, made2:0, FTM:0, fouls:0}
         return stats
     }
-
-    const isFoulTrouble = (player) => {
-        return (player.fouls > store.state.game.period)
-      }  
 
     return {
         // These two are static for the game, used for team name and colors
@@ -430,7 +429,6 @@ export default {
         playerStats,
         points,
         rebounds,
-        isFoulTrouble,
         shortName,
         reset,
 

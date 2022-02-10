@@ -62,7 +62,7 @@ export default {
         rebounds,
         points,
         selectPlayer,
-        isFoulTrouble: (player) => player.PF > store.state.game.period
+        isFoulTrouble: (player) => player.PF + player.OF > store.state.game.period
     }
   }
 }

@@ -6,7 +6,7 @@
                     {{player.firstName.substring(0,1)}}. {{player.lastName}}
                 </div>
                 <div :class="{'foul-trouble':isFoulTrouble()}">
-                    Fouls: {{(stats.PF ? stats.PF : 0)}}, Points: {{points()}}<span v-if="rightNow()">, Last: {{rightNow()}}</span>
+                    Fouls: {{(stats.PF ? stats.PF : 0) + (stats.OF ? stats.OF : 0)}}, Points: {{points()}}<span v-if="rightNow()">, Last: {{rightNow()}}</span>
                 </div>
             </div>
             <div v-else>
@@ -27,7 +27,7 @@ export default {
       const store = useStore()
     
       const isFoulTrouble = () => {
-        return (props.stats.fouls > store.state.game.period)
+        return (props.stats.OF + props.stats.PF > store.state.game.period)
       }     
       const rightNow = () =>  {
         return props.stats.rightNow
