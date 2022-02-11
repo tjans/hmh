@@ -93,12 +93,14 @@ export default {
   padding: 10px;
   text-transform: uppercase;
   font-size: 16pt;
+  font-family:KlavikaWebBoldCond;
 }
 
 .team-header-sm {
   flex-grow: 1;
   text-transform: uppercase;
   font-weight: 600;
+  font-family:KlavikaWebBoldCond;
 }
 
 .play-header {

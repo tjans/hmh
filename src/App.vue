@@ -13,26 +13,8 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-.flex-stretch {
-  flex-grow: 1;
-}
-.flex-container {
-  display: flex;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+  font-size: 14pt;
+  font-family: KlavikaWebRegCond; /* KlavikaWebBoldCond */
 }
 
 @font-face {
@@ -46,7 +28,38 @@
 }
 
 @font-face {
-  font-family: MediumCond;
-  src: url(/fonts/medium-cond.woff);
+  font-family: KlavikaWebRegCond;
+  src: url(/fonts/KlavikaWebRegCond.ttf);
+}
+
+.th {
+  font-family:KlavikaWebBoldCond important!;
+}
+.t {
+  font-family:KlavikaWebRegCond important!;
+}
+
+.flex-stretch {
+  flex-grow: 1;
+}
+.flex-container {
+  display: flex;
+}
+
+.flex-center {
+  justify-content:center;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>

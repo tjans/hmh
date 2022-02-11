@@ -3,7 +3,7 @@
          {{ team.city }}
         </div>
         
-        <table width="100%" class="table table-light table-striped table-hover table-sm" style="font-size:9pt; font-family:arial;">
+        <table width="100%" class="table table-light table-striped table-hover table-sm">
                 
                 <thead class="thead-dark">
                  <tr>
@@ -19,7 +19,7 @@
                 </tr>
                 </thead>
              
-                <tbody>
+                <tbody style="font-family:KlavikaWebRegCond; font-size:12pt;">
                 <tr class="roster-player" :class="{ 'table-danger': isFoulTrouble(player)}" style="cursor:pointer;" v-for="player in stats" :key="player.id" @click="selectPlayer(player.id)">
                     <td :class="{'foul-trouble':true}" style="text-align:left; font-weight:bold;">{{player.lastName}}</td>
                     <td>{{points(player)}}</td>

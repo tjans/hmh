@@ -98,7 +98,7 @@
         </div>
 
         <div class="action-buttons flex-container">
-          <button class="flex-stretch" @click="reset()">Reset</button>
+          <router-link class="flex-stretch" to="/teams">Exit</router-link>
           <button class="flex-stretch" @click="undo()">UNFLIP</button>
           <button class="flex-stretch new-period" @click="newPeriod">New Period</button>
         </div>
@@ -119,7 +119,7 @@
 
         <div class="text-start">
             <div v-for="(event, index) in summary" :key="index" 
-                style="border-bottom:1px solid #1A202C; padding:5px 5px 5px 15px; font-family:KlavikaWebRegCondensed">
+                style="border-bottom:1px solid #1A202C; padding:5px 5px 5px 15px; font-family:KlavikaWebRegCond">
                     Period {{ event.period }} - {{ event.clock }} - {{ event.text }}
             </div>
         </div>
@@ -376,7 +376,10 @@ export default {
     }
 
     const newPeriod = () => {
-        store.commit('game/newPeriod')
+        if(confirm('Are you sure?  This will reset the clock and all team fouls!'))
+        {
+          store.commit('game/newPeriod')
+        }
     }
 
     const getStats = (position) => {
@@ -485,7 +488,9 @@ html {
   height: 99vh;
 }
 
-.action-buttons button {
+.action-buttons button, .action-buttons a {
+  text-decoration:none;
+  display:block;
   background: black;
   color: #838383;
   border: 1px solid #1a202c;
@@ -495,7 +500,7 @@ html {
   text-transform: uppercase;
 }
 
-.action-buttons button:hover {
+.action-buttons button:hover, .action-buttons a:hover {
   color: white;
 }
 
