@@ -1,3 +1,17 @@
+Create league
+Active league
+Separate games/teams/etc by league folder
+
+Edit teams (logo upload)
+Remove keyboard shortcuts from global scope
+Saving stats after a game
+    Do you want to include the stats for this game in season totals?
+    Add stats to season stats
+    Save game stats to archive folder
+
+Recalculate stats option
+
+
 Final minute
 Other settings?
 

@@ -8,7 +8,7 @@ export default function useGameData()
     const store = useStore()
     const pStore = usePersistentStore()
     let teams = pStore.load('teams')
-
+    
     const homeTeam = teams.find(team=>team.id == store.state.game.homeTeamId)
     const awayTeam = teams.find(team=>team.id == store.state.game.awayTeamId)
 

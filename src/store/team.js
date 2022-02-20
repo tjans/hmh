@@ -12,7 +12,20 @@ const team = {
   namespaced: true,
   state: () => (defaultState),
     mutations: {
+      SAVE (state, payload) {
+        let team = state.find(t=>t.id === payload.id)
+        if(team) {
+          Object.assign(team, payload)
+          pStore.save('teams', state)
+        }
+      }
+    },
+    
+    getters: {
+      getById(state) {
+        return (id) => state.find(t=>t.id === id)
+      },
     }
-  };
+  }
 
 export {team}

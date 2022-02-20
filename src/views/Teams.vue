@@ -1,6 +1,5 @@
 <template>
-    <strong>Teams</strong><br />
-    <div style="font-family:KlavikaWebRegCond;">Teams</div>
+    <strong>Teams</strong><br /> (<router-link to="/">game</router-link>)
 
       <div style="display:flex; justify-content:center; width:500px;">
       <table class="table table-light table-striped table-hover table-sm">
@@ -17,7 +16,7 @@
               <td>{{team.city}}</td>
               <td>{{team.mascot}}</td>
               <td>
-                <a href='#'>edit</a>
+                <router-link :to="{ name: 'edit/team', params: { id: team.id }}">edit</router-link>
               </td>
             </tr>
           </tbody>
@@ -35,7 +34,7 @@ export default {
   props: [],
   setup() { 
     const store = useStore()
-
+    
     return {
       teams: computed(() => store.state.team )
     }
